@@ -165,7 +165,7 @@
     <button class="btn primary center" id="btnStart">はじめる</button>
     <button class="btn center" id="btnContinue" style="display:none">つづきから</button>
   </div>
-  <div class="ver">World Enhancer v0.3</div>
+  <div class="ver">World Enhancer v0.4</div>
 </section>
 
 <!-- ================= game (desktop) ================= -->
@@ -178,7 +178,7 @@
     <div class="icons">
       <div class="icon" id="icoMail"><div class="tile">✉️<span class="badge" id="mailBadge">1</span></div>メール</div>
       <div class="icon" id="icoTool"><div class="tile">🖌️</div>フォトショ</div>
-      <div class="icon locked"><div class="tile">🔷</div>？？？</div>
+      <div class="icon locked" id="icoIrare"><div class="tile" id="irareTile">🔷</div><span id="irareLabel">？？？</span></div>
       <div class="icon locked"><div class="tile">🧊</div>？？？</div>
     </div>
     <div id="deskHint">メールが届いています。開いてみましょう。</div>
@@ -234,7 +234,10 @@ var SKILLS = [
 { id:"mojiire", label:"もじをいれる"},
 { id:"naosu", label:"なおす"},
 { id:"bokasu", label:"ぼかす"},
-{ id:"ironokosu", label:"いろをのこす"}
+{ id:"ironokosu", label:"いろをのこす"},
+{ id:"kaku", label:"かく"},
+{ id:"naraberu", label:"ならべる"},
+{ id:"awaseru", label:"あわせる"}
 ];
 function freshState(){
 var s = { skills:{}, progress:0, accepted:false};
@@ -455,10 +458,39 @@ photo:function(){ return PH.q3; },
 frameW:400, frameH:225,
 ideal:{ x:40, y:48, w:400, h:225},
 textZone:{ x:56, y:58, w:210, h:56} /* 理想の構図の中の、空の部分 */
+},
+{
+id:"q9", type:"trace", tool:"irare", day:"5日目・午前", title:"仕事9 ペンで星をかく",
+mail:"5日目。今日から新しいツール「イラレ」だよ。写真ではなく、線と形で絵を作る道具だ。\n\n【仕事9】ペンで星をかく\n看板に使う星のマークを、ベクターで描く。\n・イラレで開く\n・コマンド「かく」で、点線の輪郭のポイントを順にクリックする\n・全部つながると星が完成する\n・かきだす で納品\n\n写真と違って、拡大しても荒れないのがベクターの強みだよ。",
+shape:{ cx:240, cy:158, R:105, r:44 }
+},
+{
+id:"q10", type:"align", tool:"irare", day:"5日目・午後", title:"仕事10 飾りをならべる",
+mail:"午後の仕事はこちら。\n\n【仕事10】飾りをならべる\n看板の飾りがバラバラに置かれている。\n・イラレで開く\n・コマンド「ならべる」で、飾りをドラッグして、薄く見えるシルエットの位置に合わせる\n・5つ全部が揃ったら かきだす で納品\n\n配置の美しさは「揃っている」ことから生まれるよ。",
+items:["star", "moon", "circle", "diamond", "heart"],
+slots:[ {x:84, y:118}, {x:162, y:118}, {x:240, y:118}, {x:318, y:118}, {x:396, y:118} ],
+starts:[ {x:60, y:256}, {x:150, y:276}, {x:240, y:250}, {x:330, y:274}, {x:414, y:254} ]
+},
+{
+id:"q11", type:"combine", tool:"irare", day:"6日目・午前", title:"仕事11 形をあわせる",
+mail:"6日目。今日は形の足し算。\n\n【仕事11】形をあわせる\nお題は「家」のシルエット。図形を2つ組み合わせて作る。\n・イラレで開く\n・コマンド「あわせる」で、図形チップを2つ選ぶ\n・もう一度「あわせる」を押すと合成される\n・お題どおりになれば かきだす で納品\n\nどの形とどの形で何ができるか。それがベクターの発想だよ。",
+palette:["しかく", "さんかく", "まる", "ほし", "つき"],
+answer:["しかく", "さんかく"]
+},
+{
+id:"q12", type:"logo", tool:"irare", day:"6日目・午後", title:"仕事12 卒業制作：ロゴマーク",
+mail:"イラレ編の卒業制作だよ。\n\n【仕事12】店のロゴマークを作る\n星の雑貨屋のロゴマークを仕上げる。\n・イラレで開く\n・コマンド「かく」で、葉の輪郭のポイントを順にクリックする\n・店の色を3案から選ぶ\n・コマンド「ならべる」で、マークの置き場所を決める\n・かきだす で納品\n\n色の正解は「店らしいかどうか」。セールの色は選ばないこと。",
+leaf:[ [240,46], [292,96], [306,150], [278,206], [240,254], [202,206], [174,150], [188,96] ],
+palettes:[
+{ name:"紺と金", bg:"#1d2f57", fg:"#f2c14e", ok:true, why:"" },
+{ name:"赤と白", bg:"#c23b2e", fg:"#ffffff", ok:false, why:"セールの店みたいになってしまう。雑貨屋の落ち着きがない。" },
+{ name:"緑と茶", bg:"#3f6212", fg:"#d6c08a", ok:false, why:"森の小物屋の色だね。星の雑貨屋ではない。" }
+],
+markZone:{ x:48, y:88, w:140, h:140 }
 }
 ];
 if(S.progress > QUESTS.length) S.progress = QUESTS.length; /* migrate 時点では QUESTS 未定義のため、ここで上限を効かせる */
-var MAIL_ALL_DONE = "フォトショ編は卒業だね。おつかれさま。\nきりとる、ぬる、けす、かさねる、もじをいれる、なおす、ぼかす、いろをのこす。8つの仕事で基本と応用が揃った。\n\n次のツール「イラレ」は準備中。楽しみにしていて。";
+var MAIL_ALL_DONE = "イラレ編も卒業だね。おつかれさま。\nかく、ならべる、あわせる。写真の加工と、線と形の作図。道具が2つ揃った。\n\n次のツール「ポーザー」（3D）は準備中。楽しみにしていて。";
 
 /* ================= photo instances / sprite ================= */
 PH.q1 = makePhoto("assets/photo-lantern.jpg", paintMeadow);
@@ -503,6 +535,11 @@ var SPR_W = 68, SPR_H = 120;   /* q3 でのランタンの表示サイズ */
 function $(id){ return document.getElementById(id); }
 var cv = $("cv"), ctx = cv.getContext("2d");
 function curQuest(){ return S.progress < QUESTS.length ? QUESTS[S.progress] : null; }
+var TOOL_INFO = {
+photoshop:{ label:"フォトショ", icon:"🖌️" },
+irare:{ label:"イラレ", icon:"✒️" }
+};
+function questTool(q){ return q.tool || "photoshop"; }
 function renderStatus(){
   var wrap = $("skills"); wrap.innerHTML = "";
   SKILLS.forEach(function(k){
@@ -517,11 +554,16 @@ function renderStatus(){
   var q = curQuest();
   $("dayLabel").textContent = q ? q.day : QUESTS[QUESTS.length - 1].day;
   $("mailBadge").style.display = (!S.accepted && q) ? "flex" : "none";
-  $("icoTool").classList.toggle("pulse", S.accepted);
+  var irareOpen = S.progress >= 8;
+  $("icoIrare").classList.toggle("locked", !irareOpen);
+  $("irareTile").textContent = irareOpen ? "✒️" : "🔷";
+  $("irareLabel").textContent = irareOpen ? "イラレ" : "？？？";
+  $("icoTool").classList.toggle("pulse", S.accepted && !!q && questTool(q) === "photoshop");
+  $("icoIrare").classList.toggle("pulse", S.accepted && !!q && questTool(q) === "irare");
   $("deskHint").textContent =
-    !q ? "フォトショ編の仕事は全部納品済みです。おつかれさまでした。" :
+    !q ? "全ての仕事は納品済みです。おつかれさまでした。" :
     !S.accepted ? "メールが届いています。開いてみましょう。" :
-    "フォトショを開いて、仕事を進めましょう。";
+    TOOL_INFO[questTool(q)].label + "を開いて、仕事を進めましょう。";
 }
 
 /* ================= mail ================= */
@@ -530,7 +572,7 @@ function openMail(){
   var q = curQuest();
   if(!q){ $("mailText").textContent = MAIL_ALL_DONE; $("btnAccept").style.display = "none"; }
   else{
-    $("mailText").textContent = q.mail + (S.accepted ? "\n\n（この仕事は受注済みです。フォトショを開いて進めましょう）" : "");
+    $("mailText").textContent = q.mail + (S.accepted ? "\n\n（この仕事は受注済みです。" + TOOL_INFO[questTool(q)].label + "を開いて進めましょう）" : "");
     $("btnAccept").style.display = S.accepted ? "none" : "block";
   }
   $("mailWin").classList.add("on");
@@ -542,7 +584,11 @@ $("btnAccept").addEventListener("click", function(){
 $("btnMailClose").addEventListener("click", closeWins);
 function closeWins(){ $("mailWin").classList.remove("on"); $("toolWin").classList.remove("on"); }
 document.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click", closeWins); });
-$("icoTool").addEventListener("click", openTool);
+$("icoTool").addEventListener("click", function(){ openTool("photoshop"); });
+$("icoIrare").addEventListener("click", function(){
+if(S.progress < 8){ $("deskHint").textContent = "まだ使えません。フォトショ編を卒業すると解放されます。"; return; }
+openTool("irare");
+});
 
 /* ================= stage (quest session) ================= */
 var stage = null;
@@ -558,12 +604,22 @@ adj:{ b:100, h:0}, adjMiss:0,
 sharp:null, sharpIou:0,
 spotMiss:0, spotDone:false,
 frame:{ x:8, y:88}, frameDrag:null, frameIou:0,
+traceHit:0, traceErr:0, traceMiss:0,
+alignPos: q.starts? q.starts.map(function(p){ return { x:p.x, y:p.y, locked:false }; }): null,
+dragItem:-1, dragOff:null, strays:0,
+pick:[], combineMiss:0, combined:false,
+logoColor:-1, colorMiss:0, markPlaced:false,
 finished:false
 };
 }
-function openTool(){
+function openTool(toolId){
 var q = curQuest();
-$("toolTitle").textContent = "🖌️ フォトショ" + (q? " ― " + q.title: "");
+if(q && toolId && questTool(q) !== toolId){
+$("deskHint").textContent = TOOL_INFO[questTool(q)].label + "の仕事が届いています。そちらのアイコンを開いてください。";
+return;
+}
+var info = TOOL_INFO[toolId || (q ? questTool(q) : "photoshop")];
+$("toolTitle").textContent = info.icon + " " + info.label + (q? " ― " + q.title: "");
 $("toolWin").classList.add("on");
 if(S.accepted && q && (!stage || stage.q!== q || stage.finished)){
 stage = newStage(q);
@@ -640,6 +696,157 @@ ctx.fillStyle = "#5b4326"; ctx.font = "800 21px 'Hiragino Kaku Gothic ProN', san
 ctx.fillText("星のランタン、", z.x, z.y + 30);
 ctx.fillText("夜道のともしび。", z.x, z.y + 60);
 }
+/* ================= イラレ編（ベクター） ================= */
+function starPoints(cx, cy, R, r){
+var pts = [];
+for(var i = 0; i < 10; i++){
+var ang = -Math.PI / 2 + i * Math.PI / 5, rad = (i % 2 === 0) ? R : r;
+pts.push({ x: Math.round(cx + rad * Math.cos(ang)), y: Math.round(cy + rad * Math.sin(ang)) });
+}
+return pts;
+}
+function questPoints(q){
+if(q.type === "trace") return starPoints(q.shape.cx, q.shape.cy, q.shape.R, q.shape.r);
+if(q.type === "logo") return q.leaf.map(function(p){ return { x:p[0], y:p[1] }; });
+return null;
+}
+function shapePath(kind, cx, cy, s){
+ctx.beginPath();
+if(kind === "circle"){ ctx.arc(cx, cy, s, 0, Math.PI * 2); }
+else if(kind === "diamond"){ ctx.moveTo(cx, cy - s); ctx.lineTo(cx + s * 0.8, cy); ctx.lineTo(cx, cy + s); ctx.lineTo(cx - s * 0.8, cy); ctx.closePath(); }
+else if(kind === "star"){
+for(var i = 0; i < 10; i++){
+var ang = -Math.PI / 2 + i * Math.PI / 5, rad = (i % 2 === 0) ? s : s * 0.45;
+var px = cx + rad * Math.cos(ang), py = cy + rad * Math.sin(ang);
+if(i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+}
+ctx.closePath();
+}
+else if(kind === "heart"){
+ctx.moveTo(cx, cy + s * 0.85);
+ctx.bezierCurveTo(cx - s * 1.25, cy, cx - s * 0.7, cy - s * 1.05, cx, cy - s * 0.35);
+ctx.bezierCurveTo(cx + s * 0.7, cy - s * 1.05, cx + s * 1.25, cy, cx, cy + s * 0.85);
+}
+else if(kind === "moon"){
+ctx.arc(cx, cy, s, 0, Math.PI * 2);
+ctx.moveTo(cx + s * 0.45 + s * 0.82, cy - s * 0.2);
+ctx.arc(cx + s * 0.45, cy - s * 0.2, s * 0.82, 0, Math.PI * 2);
+}
+}
+function drawShape(kind, cx, cy, s, color){
+shapePath(kind, cx, cy, s);
+ctx.fillStyle = color;
+ctx.fill(kind === "moon" ? "evenodd" : "nonzero");
+}
+function drawGeom(name, cx, cy, s, color){
+ctx.fillStyle = color;
+if(name === "しかく"){ ctx.fillRect(cx - s, cy - s * 0.8, s * 2, s * 1.6); }
+else if(name === "さんかく"){ ctx.beginPath(); ctx.moveTo(cx, cy - s); ctx.lineTo(cx + s, cy + s * 0.8); ctx.lineTo(cx - s, cy + s * 0.8); ctx.closePath(); ctx.fill(); }
+else if(name === "まる"){ drawShape("circle", cx, cy, s, color); }
+else if(name === "ほし"){ drawShape("star", cx, cy, s, color); }
+else if(name === "つき"){ drawShape("moon", cx, cy, s, color); }
+}
+function drawArtboard(){
+ctx.fillStyle = "#f7f3e8"; ctx.fillRect(0, 0, 480, 320);
+ctx.strokeStyle = "#d8d0ba"; ctx.lineWidth = 1;
+for(var gx = 40; gx < 480; gx += 40){ ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, 320); ctx.stroke(); }
+for(var gy = 40; gy < 320; gy += 40){ ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(480, gy); ctx.stroke(); }
+}
+function drawTraceCommon(pts, hit, fillColor){
+drawArtboard();
+ctx.beginPath();
+pts.forEach(function(p, i){ if(i === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y); });
+ctx.closePath();
+if(fillColor){ ctx.fillStyle = fillColor; ctx.fill(); }
+ctx.strokeStyle = "#9a917c"; ctx.lineWidth = 2; ctx.setLineDash([6, 5]); ctx.stroke(); ctx.setLineDash([]);
+if(hit > 0){
+ctx.beginPath();
+for(var i = 0; i <= hit && i < pts.length; i++){ var p = pts[i]; if(i === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y); }
+if(hit >= pts.length) ctx.closePath();
+ctx.strokeStyle = "#33507e"; ctx.lineWidth = 3; ctx.stroke();
+}
+pts.forEach(function(p, i){
+ctx.beginPath(); ctx.arc(p.x, p.y, i === hit ? 8 : 5.5, 0, Math.PI * 2);
+ctx.fillStyle = i < hit ? "#f2c14e" : (i === hit ? "#ffffff" : "#c9c2ae");
+ctx.fill(); ctx.strokeStyle = "#33507e"; ctx.lineWidth = 2; ctx.stroke();
+});
+}
+function drawTrace(){
+var done = stage.step === "exp" || stage.step === "done";
+drawTraceCommon(questPoints(stage.q), stage.traceHit, done ? "#f2c14e" : null);
+}
+function drawAlign(){
+var q = stage.q;
+drawArtboard();
+ctx.fillStyle = "#b08954";
+if(ctx.roundRect){ ctx.beginPath(); ctx.roundRect(36, 58, 408, 122, 10); ctx.fill(); }
+else ctx.fillRect(36, 58, 408, 122);
+ctx.fillStyle = "#8a6a3e"; ctx.fillRect(36, 168, 408, 12);
+q.slots.forEach(function(s, i){ drawShape(q.items[i], s.x, s.y, 24, "rgba(40,26,10,0.30)"); });
+stage.alignPos.forEach(function(p, i){
+if(!p.locked) drawShape(q.items[i], p.x, p.y, 24, ["#e8b23a", "#7f9fd4", "#d4708a", "#7fb069", "#c95e7a"][i]);
+else drawShape(q.items[i], p.x, p.y, 24, ["#f2c14e", "#a9c3e8", "#e59ab0", "#a5cc93", "#e08aa2"][i]);
+});
+}
+function drawHouse(cx, cy, s, color, dashed){
+ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 2.5;
+ctx.setLineDash(dashed ? [7, 5] : []);
+ctx.beginPath();
+ctx.moveTo(cx - s, cy + s * 0.9); ctx.lineTo(cx - s, cy - s * 0.1); ctx.lineTo(cx, cy - s * 0.95); ctx.lineTo(cx + s, cy - s * 0.1); ctx.lineTo(cx + s, cy + s * 0.9); ctx.closePath();
+if(dashed) ctx.stroke(); else ctx.fill();
+ctx.setLineDash([]);
+}
+function drawCombine(){
+var q = stage.q;
+drawArtboard();
+drawHouse(240, 118, 62, "#9a917c", !stage.combined);
+if(stage.combined) drawHouse(240, 118, 62, "#7fb069", false);
+ctx.fillStyle = "#5a5342"; ctx.font = "700 15px sans-serif"; ctx.textAlign = "center";
+ctx.fillText("お題：家", 240, 42);
+ctx.textAlign = "left";
+stage.pick.forEach(function(name, i){
+drawGeom(name, 190 + i * 100, 252, 30, "#33507e");
+if(i === 0 && stage.pick.length === 2){ ctx.fillStyle = "#5a5342"; ctx.font = "800 26px sans-serif"; ctx.fillText("＋", 228, 262); }
+});
+}
+function drawLeafIn(cx, cy, scale, color, q, vein){
+ctx.beginPath();
+q.leaf.forEach(function(p, i){
+var x = cx + (p[0] - 240) * scale, y = cy + (p[1] - 150) * scale;
+if(i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+});
+ctx.closePath(); ctx.fillStyle = color; ctx.fill();
+if(vein){
+ctx.beginPath();
+ctx.moveTo(cx + (240 - 240) * scale, cy + (56 - 150) * scale);
+ctx.lineTo(cx + (240 - 240) * scale, cy + (244 - 150) * scale);
+ctx.strokeStyle = vein; ctx.lineWidth = Math.max(2, 4 * scale); ctx.stroke();
+}
+}
+function drawLogo(){
+var q = stage.q;
+if(stage.step === "idle" || stage.step === "trace"){ drawTraceCommon(q.leaf.map(function(p){ return { x:p[0], y:p[1] }; }), stage.traceHit, null); return; }
+drawArtboard();
+var pal = q.palettes[Math.max(0, stage.logoColor)];
+if(stage.step === "place" && !stage.markPlaced){
+ctx.strokeStyle = "#33507e"; ctx.lineWidth = 2; ctx.setLineDash([8, 5]);
+ctx.strokeRect(q.markZone.x, q.markZone.y, q.markZone.w, q.markZone.h); ctx.setLineDash([]);
+ctx.fillStyle = "#5a5342"; ctx.font = "700 14px sans-serif";
+ctx.fillText("マークの場所", q.markZone.x + 16, q.markZone.y - 10);
+}
+if(stage.markPlaced || stage.step === "exp" || stage.step === "done"){
+ctx.beginPath(); ctx.arc(118, 158, 66, 0, Math.PI * 2); ctx.fillStyle = pal.bg; ctx.fill();
+drawLeafIn(118, 158, 0.52, pal.fg, q, pal.bg);
+ctx.fillStyle = "#33415c"; ctx.font = "800 27px 'Hiragino Kaku Gothic ProN', sans-serif";
+ctx.fillText("星の雑貨屋", 208, 168);
+}else{
+ctx.beginPath(); ctx.arc(240, 150, 74, 0, Math.PI * 2); ctx.fillStyle = pal.bg; ctx.fill();
+drawLeafIn(240, 150, 0.58, pal.fg, q, pal.bg);
+ctx.fillStyle = "#5a5342"; ctx.font = "700 14px sans-serif"; ctx.textAlign = "center";
+ctx.fillText(stage.logoColor >= 0 ? "この色でいく" : "色を選んでください", 240, 262);
+ctx.textAlign = "left";
+}
+}
 function drawAdjust(){
 var q = stage.q;
 ctx.filter = "brightness(" + (q.bad.b * stage.adj.b / 100).toFixed(3) + ") saturate(" + q.bad.s + ") hue-rotate(" + (q.bad.h + stage.adj.h) + "deg)";
@@ -709,7 +916,7 @@ ctx.setLineDash([]);
 function refreshCanvas(){
 var q = curQuest();
 if(!q){ ctx.drawImage(PH.q4.canvas, 0, 0); return;}
-if(!stage || stage.q!== q){ ctx.drawImage(q.photo().canvas, 0, 0); return;}
+if(!stage || stage.q!== q){ if(q.photo) ctx.drawImage(q.photo().canvas, 0, 0); else drawArtboard(); return;}
 if(q.type === "cutfill"){
 if((stage.step === "fill") && stage.sel) drawCutout(null);
 else if((stage.step === "exp" || stage.step === "done") && stage.sel) drawCutout(FILL_OK);
@@ -722,6 +929,10 @@ else if(q.type === "adjust"){ drawAdjust();}
 else if(q.type === "blur"){ drawBlur();}
 else if(q.type === "spotcolor"){ drawSpot();}
 else if(q.type === "trim"){ drawTrim();}
+else if(q.type === "trace"){ drawTrace();}
+else if(q.type === "align"){ drawAlign();}
+else if(q.type === "combine"){ drawCombine();}
+else if(q.type === "logo"){ drawLogo();}
 }
 
 /* ================= briefs / commands ================= */
@@ -775,6 +986,32 @@ trim:"【手順1】コマンド「きりとる」を押してから、写真を�
 pos:"【手順2】タイトルを置く場所をクリックで選んでください。\n置くのは <b>空の部分</b>（構図の左上あたり）。景色に被せないこと。",
 exp:"【手順3】バナーが仕上がりました。コマンド「かきだす」で納品してください。",
 done:"この仕事は納品済みです。"
+},
+q9: {
+idle:"【手順】コマンド「かく」を押してから、点線の星の輪郭にある <b>ポイントを順に</b> クリックしてください。\n光っているポイントが次に押す場所です。",
+trace:"【手順】コマンド「かく」を押してから、点線の星の輪郭にある <b>ポイントを順に</b> クリックしてください。\n光っているポイントが次に押す場所です。",
+exp:"星が完成しました。コマンド「かきだす」で納品してください。",
+done:"この仕事は納品済みです。"
+},
+q10: {
+idle:"【手順】コマンド「ならべる」を押してから、下の飾りをドラッグして、看板の <b>シルエットの位置</b> に合わせてください。\n形と場所が合うと、その場に留まります。",
+align:"【手順】コマンド「ならべる」を押してから、下の飾りをドラッグして、看板の <b>シルエットの位置</b> に合わせてください。\n形と場所が合うと、その場に留まります。",
+exp:"全部揃いました。コマンド「かきだす」で納品してください。",
+done:"この仕事は納品済みです。"
+},
+q11: {
+idle:"【手順】コマンド「あわせる」を押すと図形チップが出ます。\nお題の「家」を作れる <b>2つの図形</b> を選んで、もう一度「あわせる」を押してください。",
+pick:"【手順】コマンド「あわせる」を押すと図形チップが出ます。\nお題の「家」を作れる <b>2つの図形</b> を選んで、もう一度「あわせる」を押してください。",
+exp:"家ができました。コマンド「かきだす」で納品してください。",
+done:"この仕事は納品済みです。"
+},
+q12: {
+idle:"【手順1】コマンド「かく」を押してから、葉の輪郭の <b>ポイントを順に</b> クリックしてください。",
+trace:"【手順1】コマンド「かく」を押してから、葉の輪郭の <b>ポイントを順に</b> クリックしてください。",
+color:"【手順2】店の色を3案から選んでください。\n星の雑貨屋らしい、落ち着いた色を。",
+place:"【手順3】コマンド「ならべる」が押せる状態です。左の点線の枠の中をクリックして、マークの場所を決めてください。",
+exp:"ロゴマークが完成しました。コマンド「かきだす」で納品してください。",
+done:"この仕事は納品済みです。"
 }
 };
 var COMMANDS = {
@@ -785,7 +1022,11 @@ banner:[["moji","もじをいれる"],["exp","かきだす"],["back","もどる"
 adjust:[["naosu","なおす"],["exp","かきだす"],["back","もどる"]],
 blur:[["blur","ぼかす"],["exp","かきだす"],["back","もどる"]],
 spotcolor:[["spot","いろをのこす"],["exp","かきだす"],["back","もどる"]],
-trim:[["trim","きりとる"],["moji","もじをいれる"],["exp","かきだす"],["back","もどる"]]
+trim:[["trim","きりとる"],["moji","もじをいれる"],["exp","かきだす"],["back","もどる"]],
+trace:[["kaku","かく"],["exp","かきだす"],["back","もどる"]],
+align:[["naraberu","ならべる"],["exp","かきだす"],["back","もどる"]],
+combine:[["awaseru","あわせる"],["exp","かきだす"],["back","もどる"]],
+logo:[["kaku","かく"],["naraberu","ならべる"],["exp","かきだす"],["back","もどる"]]
 };
 function setBrief(html){ $("brief").innerHTML = html;}
 function updateUI(){
@@ -794,7 +1035,7 @@ var box = $("cmdbox"); box.innerHTML = "";
 $("swatches").classList.remove("on");
 $("copies").classList.remove("on");
 $("adjbox").classList.remove("on");
-if(!q){ setBrief("フォトショ編の仕事は全部納品済みです。おつかれさまでした。");
+if(!q){ setBrief("全ての仕事は納品済みです。おつかれさまでした。");
 var bb2 = document.createElement("button");
 bb2.className = "btn"; bb2.textContent = "もどる";
 bb2.addEventListener("click", closeWins);
@@ -814,6 +1055,8 @@ setBrief((stage.note? "" + stage.note + "\n\n": "") + b);
 if(q.type === "cutfill" && stage.step === "fill" && stage.fillArmed) $("swatches").classList.add("on");
 if(q.type === "banner" && stage.step === "copy") $("copies").classList.add("on");
 if(q.type === "adjust" && (stage.step === "adjust" || stage.step === "exp")) $("adjbox").classList.add("on");
+if((q.type === "combine" && stage.step === "pick") || (q.type === "logo" && stage.step === "color")){ renderChips(); $("copies").classList.add("on"); }
+if(q.type === "banner" && stage.step === "copy") renderChips();
 COMMANDS[q.type].forEach(function(pair){
 var id = pair[0], btn = document.createElement("button");
 btn.className = "btn"; btn.textContent = pair[1]; btn.dataset.cmd = id;
@@ -828,6 +1071,9 @@ else if(id === "naosu"){ en = (stage.step === "idle" || stage.step === "adjust")
 else if(id === "blur"){ en = (stage.step === "idle" || stage.step === "blur"); armed = stage.step === "blur";}
 else if(id === "spot"){ en = (stage.step === "idle" || stage.step === "spot"); armed = stage.step === "spot";}
 else if(id === "trim"){ en = (stage.step === "idle" || stage.step === "trim"); armed = stage.step === "trim";}
+else if(id === "kaku"){ en = (stage.step === "idle" || stage.step === "trace"); armed = stage.step === "trace";}
+else if(id === "naraberu"){ if(q.type === "logo"){ en = stage.step === "place"; armed = stage.step === "place";} else { en = (stage.step === "idle" || stage.step === "align"); armed = stage.step === "align";}}
+else if(id === "awaseru"){ en = (stage.step === "idle" || stage.step === "pick"); armed = stage.step === "pick";}
 else if(id === "exp"){ en = stage.step === "exp" || (q.type === "adjust" && stage.step === "adjust");}
 btn.disabled =!en;
 btn.classList.toggle("armed", armed);
@@ -850,6 +1096,18 @@ else if(id === "naosu" && q.type === "adjust"){ stage.step = "adjust"; stage.not
 else if(id === "blur" && q.type === "blur"){ stage.step = "blur"; stage.note = "";}
 else if(id === "spot" && q.type === "spotcolor"){ stage.step = "spot"; stage.note = "";}
 else if(id === "trim" && q.type === "trim"){ stage.step = "trim"; stage.note = ""; refreshCanvas();}
+else if(id === "kaku" && (q.type === "trace" || q.type === "logo")){ stage.step = "trace"; stage.note = "";}
+else if(id === "naraberu" && q.type === "align"){ stage.step = "align"; stage.note = "";}
+else if(id === "naraberu" && q.type === "logo"){ stage.note = "点線の枠の中をクリックして、マークの場所を決めて。";}
+else if(id === "awaseru" && q.type === "combine"){
+if(stage.step === "idle"){ stage.step = "pick"; stage.note = ""; }
+else if(stage.step === "pick"){
+if(stage.pick.length!== 2){ stage.note = "図形を2つ選んでから押して。"; }
+else if(q.answer.every(function(a){ return stage.pick.indexOf(a) >= 0; })){ stage.combined = true; stage.step = "exp"; stage.note = ""; }
+else{ stage.combineMiss++; stage.pick = []; stage.note = "その組み合わせでは家にならない。屋根と壁、で考えて。"; }
+}
+refreshCanvas();
+}
 else if(id === "exp" && q.type === "adjust" && stage.step === "adjust"){
 var j = judgeAdjust(stage.adj.b, stage.adj.h, q.targetB, q.targetH);
 if(j.ok){ stage.adjustScore = j.score; finishQuest(); return;}
@@ -931,6 +1189,44 @@ stage.note = "そこは景色に被る。構図の左上、空の部分に。";
 }
 refreshCanvas(); updateUI();
 }
+else if((q.type === "trace" || q.type === "logo") && stage.step === "trace"){
+var pts = questPoints(q), tp = pts[stage.traceHit];
+if(tp){
+var d = Math.hypot(p.x - tp.x, p.y - tp.y);
+if(d <= 18){
+stage.traceHit++; stage.traceErr += d;
+if(stage.traceHit >= pts.length){
+if(q.type === "trace"){ stage.step = "exp"; stage.note = "星が完成した。あとは納品だけ。"; }
+else{ stage.step = "color"; stage.note = "輪郭ができた。次は店の色。"; }
+}else stage.note = "";
+}else{
+stage.traceMiss++;
+stage.note = "光っているポイントを順に押して。";
+}
+}
+refreshCanvas(); updateUI();
+}
+else if(q.type === "align" && stage.step === "align"){
+for(var ii = stage.alignPos.length - 1; ii >= 0; ii--){
+var ip = stage.alignPos[ii];
+if(!ip.locked && Math.hypot(p.x - ip.x, p.y - ip.y) <= 28){
+stage.dragItem = ii;
+stage.dragOff = { x:p.x - ip.x, y:p.y - ip.y };
+cv.setPointerCapture(ev.pointerId);
+break;
+}
+}
+}
+else if(q.type === "logo" && stage.step === "place"){
+var mz = q.markZone;
+if(p.x >= mz.x && p.x <= mz.x + mz.w && p.y >= mz.y && p.y <= mz.y + mz.h){
+stage.markPlaced = true; stage.step = "exp"; stage.note = "ロゴが決まった。あとは納品だけ。";
+}else{
+stage.posMiss++;
+stage.note = "マークは左の点線の枠の中に。";
+}
+refreshCanvas(); updateUI();
+}
 });
 cv.addEventListener("pointermove", function(ev){
 if(!stage) return;
@@ -955,6 +1251,12 @@ ctx.strokeRect(s2.x, s2.y, s2.w, s2.h); ctx.setLineDash([]);
 else if(q.type === "trim" && stage.frameDrag){
 stage.frame.x = Math.max(0, Math.min(480 - q.frameW, p.x - stage.frameDrag.dx));
 stage.frame.y = Math.max(0, Math.min(320 - q.frameH, p.y - stage.frameDrag.dy));
+refreshCanvas();
+}
+else if(q.type === "align" && stage.dragItem >= 0){
+var ip2 = stage.alignPos[stage.dragItem];
+ip2.x = Math.max(20, Math.min(460, p.x - stage.dragOff.x));
+ip2.y = Math.max(20, Math.min(300, p.y - stage.dragOff.y));
 refreshCanvas();
 }
 });
@@ -1007,6 +1309,20 @@ if(sc4.iou >= 0.68){ stage.step = "pos"; stage.note = "いい構図。次はタ�
 else stage.note = "構図が理想とずれている。ランタンと水面の光が入る位置に動かして。";
 refreshCanvas(); updateUI();
 }
+else if(q.type === "align" && stage.dragItem >= 0){
+var di = stage.dragItem; stage.dragItem = -1;
+var ip3 = stage.alignPos[di], sl = q.slots[di];
+if(Math.hypot(ip3.x - sl.x, ip3.y - sl.y) <= 20){
+ip3.x = sl.x; ip3.y = sl.y; ip3.locked = true;
+var leftA = stage.alignPos.filter(function(a){ return!a.locked; }).length;
+if(leftA === 0){ stage.step = "exp"; stage.note = "全部揃った。あとは納品だけ。"; }
+else stage.note = "揃った。残り " + leftA + " つ。";
+}else{
+stage.strays++;
+stage.note = "そこは形が違うか、位置がずれている。シルエットに合わせて。";
+}
+refreshCanvas(); updateUI();
+}
 });
 
 /* ================= swatches / copies ================= */
@@ -1021,9 +1337,12 @@ stage.note = "色が違います。指示は みずいろ です。指示文は�
 }
 updateUI();
 });
-(function buildCopies(){
-var wrap = $("copies");
-QUESTS[3].copies.forEach(function(cp, i){
+function renderChips(){
+var wrap = $("copies"); wrap.innerHTML = "";
+if(!stage) return;
+var q = stage.q;
+if(q.type === "banner"){
+q.copies.forEach(function(cp, i){
 var b = document.createElement("button");
 b.className = "btn"; b.textContent = cp.t;
 b.addEventListener("click", function(){
@@ -1034,7 +1353,34 @@ refreshCanvas(); updateUI();
 });
 wrap.appendChild(b);
 });
-})();
+}else if(q.type === "combine"){
+q.palette.forEach(function(name){
+var b = document.createElement("button");
+b.className = "btn"; b.textContent = name;
+b.dataset.chip = name;
+b.classList.toggle("armed", stage.pick.indexOf(name) >= 0);
+b.addEventListener("click", function(){
+var ix = stage.pick.indexOf(name);
+if(ix >= 0) stage.pick.splice(ix, 1);
+else if(stage.pick.length < 2) stage.pick.push(name);
+refreshCanvas(); updateUI();
+});
+wrap.appendChild(b);
+});
+}else if(q.type === "logo"){
+q.palettes.forEach(function(pal, i){
+var b = document.createElement("button");
+b.className = "btn"; b.textContent = pal.name;
+b.dataset.chip = pal.name;
+b.addEventListener("click", function(){
+if(pal.ok){ stage.logoColor = i; stage.step = "place"; stage.note = "その色でいこう。あとはマークの場所。";}
+else{ stage.colorMiss++; stage.note = pal.why;}
+refreshCanvas(); updateUI();
+});
+wrap.appendChild(b);
+});
+}
+}
 
 /* ================= adjust sliders ================= */
 function syncSliders(){
@@ -1094,6 +1440,30 @@ gains.mojiire = Math.max(4, 8 - stage.posMiss * 2);
 lines.push("納品完了！ 卒業制作のバナー完成（構図の一致度 " + Math.round(stage.frameIou * 100) + "%）");
 lines.push("フォトショ編、卒業だね。8つの仕事、よくやり切った。次のツールもこの調子で。");
 }
+else if(q.type === "trace"){
+var avgErr = stage.traceHit? stage.traceErr / stage.traceHit: 99;
+var accBonus = avgErr <= 6? 6: (avgErr <= 12? 3: 0);
+gains.kaku = Math.max(8, 12 + accBonus - stage.traceMiss);
+lines.push("納品完了！ 星のマーク完成（ポイントの外し " + stage.traceMiss + " 回、平均のずれ " + avgErr.toFixed(1) + "px）");
+lines.push("ベクターは拡大しても荒れない。看板にぴったりの作り方だね。");
+}
+else if(q.type === "align"){
+gains.naraberu = Math.max(8, 16 - stage.strays * 2);
+lines.push("納品完了！ 飾り5つが整列（置き直し " + stage.strays + " 回）");
+lines.push("揃えるだけで、こんなに看板らしくなる。配置は地味で大事な技術だよ。");
+}
+else if(q.type === "combine"){
+gains.awaseru = Math.max(8, 16 - stage.combineMiss * 3);
+lines.push("納品完了！ しかく＋さんかくで家ができた（組み直し " + stage.combineMiss + " 回）");
+lines.push("形の足し算が分かると、描けるものの幅が一気に広がるよ。");
+}
+else if(q.type === "logo"){
+var avgErr12 = stage.traceHit? stage.traceErr / stage.traceHit: 99;
+gains.kaku = Math.max(6, 8 + (avgErr12 <= 8? 4: 1) - Math.floor(stage.traceMiss / 2));
+gains.naraberu = Math.max(6, 10 - stage.posMiss * 2);
+lines.push("納品完了！ ロゴマーク完成（色の選び直し " + stage.colorMiss + " 回）");
+lines.push("イラレ編、卒業だね。線と形で作る力がついた。次のツールは3Dだよ。");
+}
 var msg = lines[0] + "\n";
 SKILLS.forEach(function(k){
 if(!gains[k.id]) return;
@@ -1133,7 +1503,7 @@ renderStatus();
 /* test hook */
 window.__we = {
 state:S, QUESTS:QUESTS, scoreSelection:scoreSelection, rankFromIou:rankFromIou,
-lvFromXp:lvFromXp, judgePlace:judgePlace, judgeAdjust:judgeAdjust, hitFlaw:hitFlaw, migrate:migrate,
+lvFromXp:lvFromXp, judgePlace:judgePlace, judgeAdjust:judgeAdjust, hitFlaw:hitFlaw, migrate:migrate, starPoints:starPoints, questPoints:questPoints,
 TGT:TGT, enterGame:enterGame,
 getStage:function(){ return stage;},
 isReady:function(id){ return PH[id]? PH[id].ready: false;}
