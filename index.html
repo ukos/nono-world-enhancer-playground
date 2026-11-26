@@ -141,6 +141,11 @@
   }
   .copies{display:none; flex-direction:column; gap:8px}
   .copies.on{display:flex}
+  .adjbox{display:none; flex-direction:column; gap:9px; background:#fff; border:2px solid #b9c6de; border-radius:10px; padding:11px 13px}
+  .adjbox.on{display:flex}
+  .adjbox label{display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#33415c; white-space:nowrap}
+  .adjbox input[type=range]{flex:1}
+  .adjnote{font-size:12px; color:#5a6a86; line-height:1.6}
   .copies .btn{background:#fff; color:#22335c; border-color:#b9c6de; padding:11px 14px; font-size:14px; white-space:normal}
   .resultBox{
     display:none; background:#fff8d9; border:2px solid var(--acc); border-radius:10px;
@@ -160,7 +165,7 @@
     <button class="btn primary center" id="btnStart">はじめる</button>
     <button class="btn center" id="btnContinue" style="display:none">つづきから</button>
   </div>
-  <div class="ver">World Enhancer v0.2</div>
+  <div class="ver">World Enhancer v0.3</div>
 </section>
 
 <!-- ================= game (desktop) ================= -->
@@ -203,6 +208,11 @@
               <div class="sw" data-c="#f7c9d4" style="background:#f7c9d4"><span>ももいろ</span></div>
             </div>
             <div class="copies" id="copies"></div>
+            <div class="adjbox" id="adjbox">
+              <label>あかるさ <input type="range" id="adjB" min="60" max="150" value="100"></label>
+              <label>いろあい <input type="range" id="adjH" min="-60" max="60" value="0"></label>
+              <div class="adjnote">見本：昼の明るい光で撮ったような、品物の色がそのまま出ている感じに。</div>
+            </div>
             <div class="cmdbox" id="cmdbox"></div>
             <div class="resultBox" id="resultBox"></div>
           </div>
@@ -221,7 +231,10 @@ var SKILLS = [
 { id:"nuru", label:"ぬる"},
 { id:"kesu", label:"けす"},
 { id:"kasaneru", label:"かさねる"},
-{ id:"mojiire", label:"もじをいれる"}
+{ id:"mojiire", label:"もじをいれる"},
+{ id:"naosu", label:"なおす"},
+{ id:"bokasu", label:"ぼかす"},
+{ id:"ironokosu", label:"いろをのこす"}
 ];
 function freshState(){
 var s = { skills:{}, progress:0, accepted:false};
@@ -232,7 +245,7 @@ function migrate(p){
 var s = freshState();
 if(!p) return s;
 if(p.skills) SKILLS.forEach(function(k){ if(p.skills[k.id]) s.skills[k.id].xp = p.skills[k.id].xp | 0;});
-if(typeof p.progress === "number"){ s.progress = Math.min(p.progress, (typeof QUESTS !== "undefined" && QUESTS) ? QUESTS.length : 4); s.accepted = !!p.accepted; }
+if(typeof p.progress === "number"){ s.progress = p.progress; s.accepted = !!p.accepted; }
 else if(p.quest === "done"){ s.progress = 1; s.accepted = false;}
 else if(p.quest === "accepted"){ s.progress = 0; s.accepted = true;}
 return s;
@@ -261,6 +274,10 @@ var union = sel.w * sel.h + tgt.w * tgt.h - inter;
 return { iou: union > 0? inter / union: 0, cover: inter / (tgt.w * tgt.h)};
 }
 function rankFromIou(iou){ return iou >= 0.72? "S": (iou >= 0.58? "A": "B");}
+function judgeAdjust(b, h, tb, th){ /* 補正スライダーと目標の近さ → 合否と 0..1 の精度 */
+var db = Math.abs(b - tb) / 40, dh = Math.abs(h - th) / 45;
+return { ok: db <= 0.35 && dh <= 0.35, score: Math.max(0, 1 - (db + dh) / 2) };
+}
 function judgePlace(dx, dy){ /* 台の中心からのずれ → 0..1 の精度と合否 */
 var d = Math.sqrt(dx * dx + dy * dy);
 return { dist:d, ok: Math.abs(dx) <= 48 && Math.abs(dy) <= 32, score: Math.max(0, 1 - d / 90)};
@@ -284,6 +301,7 @@ var im = new Image();
 im.onload = function(){
 c.getContext("2d").drawImage(im, 0, 0, 480, 320);
 rec.ready = true;
+if(typeof blurCache !== "undefined") blurCache = {};
 if(typeof buildSprite === "function" && rec === PH.q1) buildSprite();
 if(document.getElementById("game").classList.contains("on")) refreshCanvas();
 };
@@ -347,8 +365,31 @@ c.fillStyle = "#7a5a30"; c.fillRect(300,196,150,12);
 c.fillStyle = "#b08954"; c.fillRect(316,150,110,48);
 c.fillStyle = "#5b8c5a"; c.beginPath(); c.arc(428,66,17,0,7); c.fill();
 }
+function paintShelf(c){ /* q5 placeholder */
+c.fillStyle = "#d8c9a8"; c.fillRect(0,0,480,320);
+c.fillStyle = "#8a6d4a"; c.fillRect(30,96,420,12); c.fillRect(30,196,420,12);
+c.fillStyle = "#7fb069"; c.fillRect(70,44,30,52); c.fillRect(120,52,24,44);
+c.fillStyle = "#d96a4a"; c.fillRect(180,40,34,56);
+c.fillStyle = "#5e7fb8"; c.fillRect(250,48,28,48); c.fillRect(310,44,30,52);
+c.fillStyle = "#b08954"; c.fillRect(370,56,64,40);
+c.fillStyle = "#e88ab0"; c.fillRect(80,150,26,46); c.fillStyle = "#8ec9e8"; c.fillRect(140,144,30,52);
+c.fillStyle = "#7a5a30"; c.fillRect(220,152,70,44); c.fillRect(330,148,26,48);
+c.fillStyle = "#5b8c5a"; c.beginPath(); c.arc(410,140,20,0,7); c.fill();
+}
+function paintStall(c){ /* q6 placeholder */
+c.fillStyle = "#f2d38a"; c.fillRect(0,0,480,90);
+c.fillStyle = "#c95e4a"; c.fillRect(0,60,480,26);
+c.fillStyle = "#e8dcc2"; c.fillRect(0,86,480,234);
+c.fillStyle = "#b08954"; c.fillRect(20,220,440,16);
+c.fillStyle = "#d96a8a"; c.fillRect(30,110,60,80); c.fillStyle = "#7fb069"; c.fillRect(390,110,60,80);
+c.fillStyle = "#f7c948"; c.beginPath(); c.arc(70,260,18,0,7); c.arc(120,266,15,0,7); c.fill();
+c.fillStyle = "#8ec9e8";
+c.beginPath(); c.moveTo(240,96); c.lineTo(272,150); c.lineTo(240,204); c.lineTo(208,150); c.closePath(); c.fill();
+c.fillStyle = "#5e7fb8";
+c.beginPath(); c.moveTo(240,110); c.lineTo(260,150); c.lineTo(240,190); c.lineTo(220,150); c.closePath(); c.fill();
+}
 var PH = {
-q1: null, q2: null, q3: null, q4: null
+q1: null, q2: null, q3: null, q4: null, q5: null, q6: null
 };
 var TGT = { x:266, y:63, w:123, h:218}; /* q1 ランタンの外接矩形（生成写真の実測値） */
 var FILL_OK = "#aee3f5";
@@ -388,15 +429,54 @@ copies:[
 { t:"今だけ激安！大セール開催中", ok:false, why:"セールの話はなし、と依頼主が言っています。"}
 ],
 textZone:{ x:28, y:44, w:196, h:96} /* 左の余白 */
+},
+{
+id:"q5", type:"adjust", day:"3日目・午前", title:"仕事5 暗い写真の色調補正",
+mail:"3日目。今日からは応用編だよ。\n\n【仕事5】暗い写真の色調補正\n店内で撮った商品棚の写真が、暗くて青っぽく写ってしまった。\n・フォトショで写真を開く\n・コマンド「なおす」で、スライダー（あかるさ／いろあい）を動かす\n・見本の感じ（昼の光で、品物の色がそのまま）に近づける\n・近づいたら かきだす で納品。まだ違うと差し戻すよ",
+photo:function(){ return PH.q5; },
+bad:{ b:0.74, h:-30, s:0.85 }, targetB:135, targetH:30
+},
+{
+id:"q6", type:"blur", day:"3日目・午後", title:"仕事6 背景ぼかし",
+mail:"午後の仕事はこちら。\n\n【仕事6】背景ぼかし\n市場の屋台の写真。周りがにぎやかすぎて、主役の水晶が埋もれている。\n・フォトショで写真を開く\n・コマンド「ぼかす」で、主役の水晶をドラッグで囲む\n・囲んだ内側だけピントが残り、周りがぼける\n・かきだす で納品\n\n囲み方は仕事1と同じ。主役に寄せて、余白は少なく。",
+photo:function(){ return PH.q6; },
+subject:{ x:209, y:94, w:65, h:132} /* 主役の水晶と台座（実写真の実測値） */
+},
+{
+id:"q7", type:"spotcolor", day:"4日目・午前", title:"仕事7 部分カラー",
+mail:"4日目。今日は色の取捨選択。\n\n【仕事7】部分カラー\n仕事4のバナー写真を、モノクロ基調に作り替える。ただし赤いポーションだけは色を残す。\n・フォトショで写真を開く\n・コマンド「いろをのこす」で、赤いポーションをクリックする\n・他はモノクロになり、赤だけが残る\n・かきだす で納品\n\n「全部同じにしない」判断が、写真を強くするよ。",
+photo:function(){ return PH.q4; },
+target:{ x:284, y:206, w:36, h:55} /* 赤いポーション（バナー写真の実測値） */
+},
+{
+id:"q8", type:"trim", day:"4日目・午後", title:"仕事8 卒業制作：夕景バナー",
+mail:"フォトショ編の卒業制作だよ。\n\n【仕事8】夕景バナーを作る\n仕事3の夕景写真を、横長のバナー（16:9）に仕上げる。\n・フォトショで写真を開く\n・コマンド「きりとる」で、16:9 の枠をドラッグして構図を決める\n・コマンド「もじをいれる」で、タイトルを置く場所を空の部分に選ぶ\n・かきだす で納品\n\n台の上のランタンと、水面の光が入る構図が理想。習ったことの総仕上げだね。",
+photo:function(){ return PH.q3; },
+frameW:400, frameH:225,
+ideal:{ x:40, y:48, w:400, h:225},
+textZone:{ x:56, y:58, w:210, h:56} /* 理想の構図の中の、空の部分 */
 }
 ];
-var MAIL_ALL_DONE = "フォトショ編の仕事は全部納品済み。おつかれさま。\nきりとる、ぬる、けす、かさねる、もじをいれる。基本の段取りは身についたね。\n\n（次のツールは準備中です。続く版で追加されます）";
+if(S.progress > QUESTS.length) S.progress = QUESTS.length; /* migrate 時点では QUESTS 未定義のため、ここで上限を効かせる */
+var MAIL_ALL_DONE = "フォトショ編は卒業だね。おつかれさま。\nきりとる、ぬる、けす、かさねる、もじをいれる、なおす、ぼかす、いろをのこす。8つの仕事で基本と応用が揃った。\n\n次のツール「イラレ」は準備中。楽しみにしていて。";
 
 /* ================= photo instances / sprite ================= */
 PH.q1 = makePhoto("assets/photo-lantern.jpg", paintMeadow);
 PH.q2 = makePhoto("assets/photo-shopfront.jpg", paintShop);
 PH.q3 = makePhoto("assets/photo-sunset.jpg", paintSunset);
 PH.q4 = makePhoto("assets/photo-banner.jpg", paintBanner);
+PH.q5 = makePhoto("assets/photo-shelf.jpg", paintShelf);
+PH.q6 = makePhoto("assets/photo-stall.jpg", paintStall);
+var blurCache = {};
+function blurOf(rec, key){
+if(!blurCache[key]){
+var c = document.createElement("canvas"); c.width = 480; c.height = 320;
+var g = c.getContext("2d");
+g.filter = "blur(5px)"; g.drawImage(rec.canvas, 0, 0); g.filter = "none";
+blurCache[key] = c;
+}
+return blurCache[key];
+}
 var sprite = document.createElement("canvas");
 sprite.width = TGT.w; sprite.height = TGT.h;
 function buildSprite(){
@@ -474,6 +554,10 @@ erased: q.flaws? q.flaws.map(function(){ return false;}): null,
 misclicks:0,
 pos:{ x:36, y:120}, dragging:false, dragOff:null, placeScore:0,
 copyIdx:-1, copyMiss:0, posMiss:0, textPlaced:false,
+adj:{ b:100, h:0}, adjMiss:0,
+sharp:null, sharpIou:0,
+spotMiss:0, spotDone:false,
+frame:{ x:8, y:88}, frameDrag:null, frameIou:0,
 finished:false
 };
 }
@@ -556,6 +640,72 @@ ctx.fillStyle = "#5b4326"; ctx.font = "800 21px 'Hiragino Kaku Gothic ProN', san
 ctx.fillText("星のランタン、", z.x, z.y + 30);
 ctx.fillText("夜道のともしび。", z.x, z.y + 60);
 }
+function drawAdjust(){
+var q = stage.q;
+ctx.filter = "brightness(" + (q.bad.b * stage.adj.b / 100).toFixed(3) + ") saturate(" + q.bad.s + ") hue-rotate(" + (q.bad.h + stage.adj.h) + "deg)";
+ctx.drawImage(q.photo().canvas, 0, 0);
+ctx.filter = "none";
+}
+function drawBlur(){
+var q = stage.q;
+if(stage.sharp){
+ctx.drawImage(blurOf(q.photo(), q.id), 0, 0);
+ctx.save();
+ctx.beginPath();
+if(ctx.roundRect) ctx.roundRect(stage.sharp.x, stage.sharp.y, stage.sharp.w, stage.sharp.h, 8);
+else ctx.rect(stage.sharp.x, stage.sharp.y, stage.sharp.w, stage.sharp.h);
+ctx.clip();
+ctx.drawImage(q.photo().canvas, 0, 0);
+ctx.restore();
+}else ctx.drawImage(q.photo().canvas, 0, 0);
+}
+function drawSpot(){
+var q = stage.q;
+if(!stage.spotDone){ ctx.drawImage(q.photo().canvas, 0, 0); return; }
+ctx.filter = "saturate(0.12)";
+ctx.drawImage(q.photo().canvas, 0, 0);
+ctx.filter = "none";
+var t = q.target, F = 8;
+var tmp = drawSpot.tmp;
+if(!tmp){ tmp = document.createElement("canvas"); tmp.width = 480; tmp.height = 320; drawSpot.tmp = tmp; }
+var g = tmp.getContext("2d");
+g.clearRect(0, 0, 480, 320);
+g.drawImage(q.photo().canvas, 0, 0);
+g.globalCompositeOperation = "destination-in";
+var grad = g.createRadialGradient(t.x + t.w/2, t.y + t.h/2, Math.min(t.w, t.h) * 0.32, t.x + t.w/2, t.y + t.h/2, Math.max(t.w, t.h) * 0.72);
+grad.addColorStop(0, "rgba(0,0,0,1)"); grad.addColorStop(1, "rgba(0,0,0,0)");
+g.fillStyle = grad;
+g.fillRect(t.x - F * 2, t.y - F * 2, t.w + F * 4, t.h + F * 4);
+g.globalCompositeOperation = "source-over";
+ctx.drawImage(tmp, 0, 0);
+}
+function drawTrim(){
+var q = stage.q, f = stage.frame;
+ctx.drawImage(q.photo().canvas, 0, 0);
+/* 仕事3で納品した合成済みの写真として、ランタンを台の上に描く */
+var t3 = QUESTS[2].placeTarget;
+ctx.drawImage(sprite, t3.cx - SPR_W / 2, t3.cy - SPR_H, SPR_W, SPR_H);
+if(stage.step === "pos" || stage.step === "exp" || stage.step === "done"){
+/* 確定した構図：枠の外を落とす */
+ctx.fillStyle = "#101c38";
+ctx.beginPath();
+ctx.rect(0, 0, 480, 320); ctx.rect(f.x, f.y, q.frameW, q.frameH);
+ctx.fill("evenodd");
+if(stage.textPlaced){
+ctx.fillStyle = "rgba(255,252,240,0.85)";
+ctx.font = "800 25px 'Hiragino Kaku Gothic ProN', sans-serif";
+ctx.fillText("夕日の湖畔", q.textZone.x + 4, q.textZone.y + 38);
+}
+return;
+}
+ctx.fillStyle = "rgba(10,17,34,0.45)";
+ctx.beginPath();
+ctx.rect(0, 0, 480, 320); ctx.rect(f.x, f.y, q.frameW, q.frameH);
+ctx.fill("evenodd");
+ctx.strokeStyle = "#fff"; ctx.lineWidth = 2; ctx.setLineDash([8, 5]);
+ctx.strokeRect(f.x, f.y, q.frameW, q.frameH);
+ctx.setLineDash([]);
+}
 function refreshCanvas(){
 var q = curQuest();
 if(!q){ ctx.drawImage(PH.q4.canvas, 0, 0); return;}
@@ -568,6 +718,10 @@ else ctx.drawImage(PH.q1.canvas, 0, 0);
 else if(q.type === "erase"){ ctx.drawImage(PH.q2.canvas, 0, 0); drawFlaws();}
 else if(q.type === "place"){ ctx.drawImage(PH.q3.canvas, 0, 0); drawSpriteAndGuide();}
 else if(q.type === "banner"){ ctx.drawImage(PH.q4.canvas, 0, 0); if(stage.textPlaced) drawBannerText();}
+else if(q.type === "adjust"){ drawAdjust();}
+else if(q.type === "blur"){ drawBlur();}
+else if(q.type === "spotcolor"){ drawSpot();}
+else if(q.type === "trim"){ drawTrim();}
 }
 
 /* ================= briefs / commands ================= */
@@ -597,13 +751,41 @@ copy:"コマンド「もじをいれる」を押して、キャッチコピー�
 pos:"コピーを置く場所を、写真の上でクリックして選んでください。\n置くのは <b>左側の余白</b>。商品に文字を被せないこと。",
 exp:"バナーが仕上がりました。コマンド「かきだす」で納品してください。",
 done:"この仕事は納品済みです。"
+},
+q5: {
+idle:"【手順】コマンド「なおす」を押すと、スライダーが出ます。\n<b>あかるさ</b> と <b>いろあい</b> を動かして、見本の感じ（昼の光で、品物の色がそのまま）に近づけてください。近づいたら「かきだす」で納品。",
+adjust:"【手順】コマンド「なおす」を押すと、スライダーが出ます。\n<b>あかるさ</b> と <b>いろあい</b> を動かして、見本の感じ（昼の光で、品物の色がそのまま）に近づけてください。近づいたら「かきだす」で納品。",
+done:"この仕事は納品済みです。"
+},
+q6: {
+idle:"【手順】コマンド「ぼかす」を押してから、主役の <b>水晶</b> をドラッグで囲んでください。\n囲んだ内側だけピントが残り、周りがぼけます。余白は少なく、主役が全部入るように。",
+blur:"【手順】コマンド「ぼかす」を押してから、主役の <b>水晶</b> をドラッグで囲んでください。\n囲んだ内側だけピントが残り、周りがぼけます。余白は少なく、主役が全部入るように。",
+exp:"主役が際立ちました。コマンド「かきだす」で納品してください。",
+done:"この仕事は納品済みです。"
+},
+q7: {
+idle:"【手順】コマンド「いろをのこす」を押してから、<b>赤いポーション</b>（本の手前にある、赤い小瓶）をクリックしてください。\n他はモノクロになり、赤だけが残ります。",
+spot:"【手順】コマンド「いろをのこす」を押してから、<b>赤いポーション</b>（本の手前にある、赤い小瓶）をクリックしてください。\n他はモノクロになり、赤だけが残ります。",
+exp:"赤だけが残りました。コマンド「かきだす」で納品してください。",
+done:"この仕事は納品済みです。"
+},
+q8: {
+idle:"【手順1】コマンド「きりとる」を押してから、写真をドラッグして <b>16:9 の枠</b> を動かし、構図を決めて手を離してください。\n理想：台の上のランタンと、水面の光が入る構図。",
+trim:"【手順1】コマンド「きりとる」を押してから、写真をドラッグして <b>16:9 の枠</b> を動かし、構図を決めて手を離してください。\n理想：台の上のランタンと、水面の光が入る構図。",
+pos:"【手順2】タイトルを置く場所をクリックで選んでください。\n置くのは <b>空の部分</b>（構図の左上あたり）。景色に被せないこと。",
+exp:"【手順3】バナーが仕上がりました。コマンド「かきだす」で納品してください。",
+done:"この仕事は納品済みです。"
 }
 };
 var COMMANDS = {
 cutfill:[["cut","きりとる"],["fill","ぬる"],["exp","かきだす"],["back","もどる"]],
 erase:[["erase","けす"],["exp","かきだす"],["back","もどる"]],
 place:[["place","かさねる"],["exp","かきだす"],["back","もどる"]],
-banner:[["moji","もじをいれる"],["exp","かきだす"],["back","もどる"]]
+banner:[["moji","もじをいれる"],["exp","かきだす"],["back","もどる"]],
+adjust:[["naosu","なおす"],["exp","かきだす"],["back","もどる"]],
+blur:[["blur","ぼかす"],["exp","かきだす"],["back","もどる"]],
+spotcolor:[["spot","いろをのこす"],["exp","かきだす"],["back","もどる"]],
+trim:[["trim","きりとる"],["moji","もじをいれる"],["exp","かきだす"],["back","もどる"]]
 };
 function setBrief(html){ $("brief").innerHTML = html;}
 function updateUI(){
@@ -611,6 +793,7 @@ var q = curQuest();
 var box = $("cmdbox"); box.innerHTML = "";
 $("swatches").classList.remove("on");
 $("copies").classList.remove("on");
+$("adjbox").classList.remove("on");
 if(!q){ setBrief("フォトショ編の仕事は全部納品済みです。おつかれさまでした。");
 var bb2 = document.createElement("button");
 bb2.className = "btn"; bb2.textContent = "もどる";
@@ -630,6 +813,7 @@ var b = BRIEFS[q.id][stage.step] || BRIEFS[q.id].idle;
 setBrief((stage.note? "" + stage.note + "\n\n": "") + b);
 if(q.type === "cutfill" && stage.step === "fill" && stage.fillArmed) $("swatches").classList.add("on");
 if(q.type === "banner" && stage.step === "copy") $("copies").classList.add("on");
+if(q.type === "adjust" && (stage.step === "adjust" || stage.step === "exp")) $("adjbox").classList.add("on");
 COMMANDS[q.type].forEach(function(pair){
 var id = pair[0], btn = document.createElement("button");
 btn.className = "btn"; btn.textContent = pair[1]; btn.dataset.cmd = id;
@@ -639,8 +823,12 @@ else if(id === "cut"){ en = (stage.step === "idle" || stage.step === "cut"); arm
 else if(id === "fill"){ en = stage.step === "fill"; armed = stage.step === "fill";}
 else if(id === "erase"){ en = (stage.step === "idle" || stage.step === "erase"); armed = stage.step === "erase";}
 else if(id === "place"){ en = (stage.step === "idle" || stage.step === "place"); armed = stage.step === "place";}
-else if(id === "moji"){ en = (stage.step === "idle" || stage.step === "copy"); armed = stage.step === "copy";}
-else if(id === "exp"){ en = stage.step === "exp";}
+else if(id === "moji"){ if(q.type === "trim"){ en = stage.step === "pos"; armed = stage.step === "pos";} else { en = (stage.step === "idle" || stage.step === "copy"); armed = stage.step === "copy";}}
+else if(id === "naosu"){ en = (stage.step === "idle" || stage.step === "adjust"); armed = stage.step === "adjust";}
+else if(id === "blur"){ en = (stage.step === "idle" || stage.step === "blur"); armed = stage.step === "blur";}
+else if(id === "spot"){ en = (stage.step === "idle" || stage.step === "spot"); armed = stage.step === "spot";}
+else if(id === "trim"){ en = (stage.step === "idle" || stage.step === "trim"); armed = stage.step === "trim";}
+else if(id === "exp"){ en = stage.step === "exp" || (q.type === "adjust" && stage.step === "adjust");}
 btn.disabled =!en;
 btn.classList.toggle("armed", armed);
 btn.addEventListener("click", function(){ onCmd(id);});
@@ -657,6 +845,17 @@ else if(id === "fill" && q.type === "cutfill"){ stage.fillArmed = true;}
 else if(id === "erase" && q.type === "erase"){ stage.step = "erase"; stage.note = "";}
 else if(id === "place" && q.type === "place"){ stage.step = "place"; stage.note = ""; refreshCanvas();}
 else if(id === "moji" && q.type === "banner"){ stage.step = "copy"; stage.note = "";}
+else if(id === "moji" && q.type === "trim"){ stage.note = "タイトルは空の部分に。写真の上で置く場所をクリック。";}
+else if(id === "naosu" && q.type === "adjust"){ stage.step = "adjust"; stage.note = ""; syncSliders();}
+else if(id === "blur" && q.type === "blur"){ stage.step = "blur"; stage.note = "";}
+else if(id === "spot" && q.type === "spotcolor"){ stage.step = "spot"; stage.note = "";}
+else if(id === "trim" && q.type === "trim"){ stage.step = "trim"; stage.note = ""; refreshCanvas();}
+else if(id === "exp" && q.type === "adjust" && stage.step === "adjust"){
+var j = judgeAdjust(stage.adj.b, stage.adj.h, q.targetB, q.targetH);
+if(j.ok){ stage.adjustScore = j.score; finishQuest(); return;}
+stage.adjMiss++;
+stage.note = "差し戻し。まだ見本と違う。" + (Math.abs(stage.adj.b - q.targetB) > 14 ? "明るさが足りない／強すぎる。" : "") + (Math.abs(stage.adj.h - q.targetH) > 16 ? "色の寄りが残っている。" : "");
+}
 else if(id === "exp"){ finishQuest(); return;}
 updateUI();
 }
@@ -705,6 +904,33 @@ stage.note = "そこは商品に被るか、余白から外れている。左側
 }
 refreshCanvas(); updateUI();
 }
+else if(q.type === "blur" && stage.step === "blur"){
+stage.drag = p; cv.setPointerCapture(ev.pointerId);
+}
+else if(q.type === "spotcolor" && stage.step === "spot"){
+var t = q.target;
+if(p.x >= t.x - 6 && p.x <= t.x + t.w + 6 && p.y >= t.y - 6 && p.y <= t.y + t.h + 6){
+stage.spotDone = true; stage.step = "exp"; stage.note = "赤だけ残った。その調子。";
+}else{
+stage.spotMiss++;
+stage.note = "それは赤いポーションじゃないよ。本の手前の、赤い小瓶。";
+}
+refreshCanvas(); updateUI();
+}
+else if(q.type === "trim" && stage.step === "trim"){
+stage.frameDrag = { dx:p.x - stage.frame.x, dy:p.y - stage.frame.y};
+cv.setPointerCapture(ev.pointerId);
+}
+else if(q.type === "trim" && stage.step === "pos"){
+var z2 = q.textZone;
+if(p.x >= z2.x && p.x <= z2.x + z2.w && p.y >= z2.y && p.y <= z2.y + z2.h){
+stage.textPlaced = true; stage.step = "exp"; stage.note = "空に置けた。あとは納品だけ。";
+}else{
+stage.posMiss++;
+stage.note = "そこは景色に被る。構図の左上、空の部分に。";
+}
+refreshCanvas(); updateUI();
+}
 });
 cv.addEventListener("pointermove", function(ev){
 if(!stage) return;
@@ -718,6 +944,17 @@ ctx.strokeRect(s.x, s.y, s.w, s.h); ctx.setLineDash([]);
 else if(q.type === "place" && stage.dragging){
 stage.pos.x = Math.max(0, Math.min(480 - SPR_W, p.x - stage.dragOff.x));
 stage.pos.y = Math.max(0, Math.min(320 - SPR_H, p.y - stage.dragOff.y));
+refreshCanvas();
+}
+else if(q.type === "blur" && stage.drag){
+var s2 = normSel(stage.drag, p);
+refreshCanvas();
+ctx.strokeStyle = "#fff"; ctx.lineWidth = 2; ctx.setLineDash([7, 5]);
+ctx.strokeRect(s2.x, s2.y, s2.w, s2.h); ctx.setLineDash([]);
+}
+else if(q.type === "trim" && stage.frameDrag){
+stage.frame.x = Math.max(0, Math.min(480 - q.frameW, p.x - stage.frameDrag.dx));
+stage.frame.y = Math.max(0, Math.min(320 - q.frameH, p.y - stage.frameDrag.dy));
 refreshCanvas();
 }
 });
@@ -745,6 +982,29 @@ var j = judgePlace(bcx - q.placeTarget.cx, bcy - q.placeTarget.cy);
 stage.placeScore = j.score;
 if(j.ok){ stage.step = "exp"; stage.note = "台の真ん中に置けた。あとは納品だけ。";}
 else stage.note = "台の真ん中からずれている。点線の枠に合わせて置き直して。";
+refreshCanvas(); updateUI();
+}
+else if(q.type === "blur" && stage.drag){
+var s3 = normSel(stage.drag, p); stage.drag = null;
+if(s3.w < 12 || s3.h < 12){ refreshCanvas(); return; }
+var sc3 = scoreSelection(s3, q.subject);
+if(sc3.cover >= 0.8 && sc3.iou >= 0.4){
+stage.sharp = s3; stage.sharpIou = sc3.iou; stage.step = "exp"; stage.note = "";
+refreshCanvas();
+}else{
+stage.note = sc3.cover < 0.8 ? "水晶が全部入っていません。もう少し大きく囲んで。" :
+"余白が大きすぎます。水晶に寄せて囲んで。";
+refreshCanvas();
+}
+updateUI();
+}
+else if(q.type === "trim" && stage.frameDrag){
+stage.frameDrag = null;
+var fr = { x:stage.frame.x, y:stage.frame.y, w:q.frameW, h:q.frameH};
+var sc4 = scoreSelection(fr, q.ideal);
+stage.frameIou = sc4.iou;
+if(sc4.iou >= 0.68){ stage.step = "pos"; stage.note = "いい構図。次はタイトルの場所。"; }
+else stage.note = "構図が理想とずれている。ランタンと水面の光が入る位置に動かして。";
 refreshCanvas(); updateUI();
 }
 });
@@ -776,6 +1036,15 @@ wrap.appendChild(b);
 });
 })();
 
+/* ================= adjust sliders ================= */
+function syncSliders(){
+if(!stage) return;
+$("adjB").value = stage.adj.b;
+$("adjH").value = stage.adj.h;
+}
+$("adjB").addEventListener("input", function(){ if(stage && stage.q.type === "adjust"){ stage.adj.b = +this.value; refreshCanvas(); }});
+$("adjH").addEventListener("input", function(){ if(stage && stage.q.type === "adjust"){ stage.adj.h = +this.value; refreshCanvas(); }});
+
 /* ================= finish ================= */
 function finishQuest(){
 var q = stage.q, gains = {}, lines = [];
@@ -800,7 +1069,30 @@ lines.push("昨日の切り抜きが今日の景色になった。合成は段�
 else if(q.type === "banner"){
 gains.mojiire = Math.max(7, 16 - stage.copyMiss * 3 - stage.posMiss * 2);
 lines.push("納品完了！ バナー完成（コピーの選び直し " + stage.copyMiss + " 回、置き直し " + stage.posMiss + " 回）");
-lines.push("フォトショ編はここまで。基本の5つが揃ったね。");
+lines.push("基本の5つが揃ったね。次は応用編だ。");
+}
+else if(q.type === "adjust"){
+gains.naosu = Math.max(8, 10 + Math.round(8 * (stage.adjustScore || 0)) - stage.adjMiss * 2);
+lines.push("納品完了！ 補正の一致度 " + Math.round((stage.adjustScore || 0) * 100) + "%（差し戻し " + stage.adjMiss + " 回）");
+lines.push("色は「正解を当てる」ものじゃない。見本と見比べて寄せる、地道な作業だよ。");
+}
+else if(q.type === "blur"){
+var rank6 = rankFromIou(stage.sharpIou);
+var bonus6 = rank6 === "S"? 10: (rank6 === "A"? 6: 2);
+gains.bokasu = 12 + bonus6;
+lines.push("納品完了！ 判定ランク " + rank6 + "（囲み方の一致度 " + Math.round(stage.sharpIou * 100) + "%）");
+lines.push("主役が浮き出た。ぼかしは「引く」演出だね。");
+}
+else if(q.type === "spotcolor"){
+gains.ironokosu = Math.max(8, 15 - stage.spotMiss * 3);
+lines.push("納品完了！ 赤いポーションだけ色を残した（選び直し " + stage.spotMiss + " 回）");
+lines.push("色を残す場所を決めるのは、色を塗るのと同じくらい大事だ。");
+}
+else if(q.type === "trim"){
+gains.kiritoru = 8 + Math.round(6 * stage.frameIou);
+gains.mojiire = Math.max(4, 8 - stage.posMiss * 2);
+lines.push("納品完了！ 卒業制作のバナー完成（構図の一致度 " + Math.round(stage.frameIou * 100) + "%）");
+lines.push("フォトショ編、卒業だね。8つの仕事、よくやり切った。次のツールもこの調子で。");
 }
 var msg = lines[0] + "\n";
 SKILLS.forEach(function(k){
@@ -841,7 +1133,7 @@ renderStatus();
 /* test hook */
 window.__we = {
 state:S, QUESTS:QUESTS, scoreSelection:scoreSelection, rankFromIou:rankFromIou,
-lvFromXp:lvFromXp, judgePlace:judgePlace, hitFlaw:hitFlaw, migrate:migrate,
+lvFromXp:lvFromXp, judgePlace:judgePlace, judgeAdjust:judgeAdjust, hitFlaw:hitFlaw, migrate:migrate,
 TGT:TGT, enterGame:enterGame,
 getStage:function(){ return stage;},
 isReady:function(id){ return PH[id]? PH[id].ready: false;}
