@@ -1,2 +1,21 @@
-# nono-world-enhancer-playground
-World Enhancer — public build (GitHub Pages)
+# World Enhancer — Learn the Tools, Enhance the World
+
+職業編第一弾。3D素人が、HD-2D lite を HD-2D フル版にすることに奮闘し、学んで、身につけて、「World Enhancer」になるまでを経験するデスクトップRPG。
+
+- 仕様書： app-concepts goal files の `world-enhancer-spec-2026-11-27.md`（正本）
+- 公開用リポジトリ： ukos/nono-world-enhancer-playground（https://ukos.github.io/nono-world-enhancer-playground/ ）
+- 本リポジトリは開発用（ソース）。公開物は公開用リポジトリへ置く
+
+## 遊び方
+
+単一の `index.html` をブラウザで開くだけで動く（外部ライブラリなし）。セーブは localStorage。
+
+## v0.2
+
+フォトショ編の全4クエスト。仕事はメールで1件ずつ届き、納品すると次が届く。
+- 仕事1：商品写真の切り抜き（きりとる → ぬる → かきだす）
+- 仕事2：店先写真の汚れ消し（けす）
+- 仕事3：仕事1のランタンを夕景へ合成（かさねる）
+- 仕事4：バナーにキャッチコピーを入れる（もじをいれる）
+
+スキルは5つが個別にレベルアップする。写真素材は全て生成画像で、判定範囲は実物の実測値に合わせている。セーブは v0.1 形式から自動で引き継ぐ。
