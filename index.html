@@ -156,7 +156,7 @@
     <button class="btn primary center" id="btnStart">はじめる</button>
     <button class="btn center" id="btnContinue" style="display:none">つづきから</button>
   </div>
-  <div class="ver">World Enhancer v0.1</div>
+  <div class="ver">World Enhancer v0.1.1</div>
 </section>
 
 <!-- ================= game (desktop) ================= -->
@@ -217,7 +217,7 @@
 "use strict";
 /* ================= data ================= */
 var SAVE_KEY = "worldenhancer-save-v1";
-var TGT = {x:298, y:138, w:88, h:128}; /* 切り抜き対象（星のランタン）の外接矩形 */
+var TGT = {x:266, y:63, w:123, h:218}; /* 切り抜き対象（星のランタン）の外接矩形：生成写真の実測値 */
 var FILL_OK = "#aee3f5"; /* 指示色：みずいろ */
 
 function freshState(){
@@ -308,6 +308,23 @@ c.fillStyle="#7a5a30"; c.fillRect(x+4, y+h-16, w-8, 10);
 c.fillStyle="#5b4326"; c.fillRect(x+16, y+h-6, w-32, 6);
 })();
 
+/* 正式素材：生成画像（assets/photo-lantern.jpg）を読み込んで写真を差し替える。
+   読み込みが終わるまでは上の手続き描画が仮置きとして表示される */
+var photoReady = false;
+var photoImg = new Image();
+photoImg.onload = function(){
+photo.getContext("2d").drawImage(photoImg, 0, 0, 480, 320);
+photoReady = true;
+if($("game").classList.contains("on")) refreshCanvas();
+};
+photoImg.src = "assets/photo-lantern.jpg";
+function refreshCanvas(){
+if(S.quest === "done" && tool.sel) drawCutout(FILL_OK);
+else if(tool.step === "fill") drawCutout(null);
+else if(tool.step === "exp") drawCutout(FILL_OK);
+else drawScene();
+}
+
 function checker(){
 ctx.fillStyle="#cfd6e4"; ctx.fillRect(0,0,480,320);
 ctx.fillStyle="#eef1f7";
@@ -353,9 +370,7 @@ refreshStatus();
 }
 function openTool(){
 $("toolWin").classList.add("on");
-if(S.quest==="done" && tool.sel){ drawCutout(FILL_OK);}
-else if(tool.step==="fill" || tool.step==="exp"){ drawCutout(tool.step==="exp"? FILL_OK: null);}
-else drawScene();
+refreshCanvas();
 toolUI();
 }
 function closeWins(){ $("mailWin").classList.remove("on"); $("toolWin").classList.remove("on");}
@@ -476,7 +491,8 @@ refreshStatus();
 
 /* test hook */
 window.__we = { state:S, tool:tool, scoreSelection:scoreSelection, rankFromIou:rankFromIou,
-lvFromXp:lvFromXp, TGT:TGT, enterGame:enterGame};
+lvFromXp:lvFromXp, TGT:TGT, enterGame:enterGame,
+isPhotoReady:function(){ return photoReady; }};
 </script>
 </body>
 </html>
