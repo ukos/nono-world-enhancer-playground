@@ -165,7 +165,7 @@
     <button class="btn primary center" id="btnStart">はじめる</button>
     <button class="btn center" id="btnContinue" style="display:none">つづきから</button>
   </div>
-  <div class="ver">World Enhancer v0.9</div>
+  <div class="ver">World Enhancer v0.10</div>
 </section>
 
 <!-- ================= game (desktop) ================= -->
@@ -709,7 +709,7 @@ doneLines:["保存完了！ 違いが全部見つかった", "木、岩、草、
 id:"q32", type:"choices", tool:"unity", from:"自分へのメモ", day:"16日目・午後", title:"追加4 公開の日",
 mail:"自分のゲームができた。あとは公開だ。\n\n【追加4】公開の設定を決める\n・ゆにてぃで開く\n・コマンド「えらぶ」を押してから、選択肢のボタンを押す\n・公開範囲と紹介文を決めたら かきだす で保存\n\n作って終わりじゃない。誰かの画面に届いて、初めて完成だ。",
 photo:function(){ return PH.full; },
-gainSkill:"tsunagu",
+gainSkill:"tsunagu", expBand:"公開の準備が整いました",
 rounds:[
 { prompt:"公開範囲は？", choices:[
 { t:"公開（誰でも遊べる）", ok:true },
@@ -727,7 +727,7 @@ doneLines:["保存完了！ ゲームが公開された", "作った世界が、
 {
 id:"q33", type:"choices", tool:"unity", from:"後輩", day:"17日目・午前", title:"追加5 教える側",
 mail:"後輩ができた。ゲームを作ってみたいのだそうだ。\n質問が2つ届いている。\n\n【追加5】後輩の質問に答える\n・ゆにてぃで開く\n・コマンド「えらぶ」を押してから、助言のボタンを押す\n・2つ答えたら かきだす で保存\n\n教えることは、自分の理解を確かめることでもある。",
-gainSkill:"mojiire",
+gainSkill:"mojiire", expBand:"後輩に答えました",
 rounds:[
 { prompt:"後輩「素材がうまく描けません…」", choices:[
 { t:"まず道具の基本を、小さく試すといいよ", ok:true },
@@ -741,10 +741,111 @@ rounds:[
 ]}
 ],
 doneLines:["保存完了！ 後輩に答えた", "教える側になった。でも、学ぶことはまだ終わらない。"]
+},
+{
+id:"q34", type:"choices", tool:"photoshop", from:"自分へのメモ", day:"18日目・午前", title:"AI編1 生成ぬりつぶし",
+mail:"【AI自動化編】フォトショの生成AIを試す。\n店先の写真、看板が欠けて、右上に電線が写り込んでいる。\n\n【AI1】生成で直す\n・フォトショで開く\n・コマンド「えらぶ」を押して、範囲と候補を選ぶ\n・決まったら かきだす で保存\n\n無いものを描き足せる。でも、範囲と結果を選ぶのは人だ。",
+photo:function(){ return PH.q2; },
+gainSkill:"nuru", expBand:"生成の準備が整いました",
+rounds:[
+{ prompt:"生成する範囲は？", choices:[
+{ t:"看板の欠けと、右上の電線", ok:true },
+{ t:"写真全体", ok:false, why:"全体を生成し直すと、残したい物まで変わってしまう。" },
+{ t:"店先の商品", ok:false, why:"商品は実物のままがいい。直すのは欠けと電線だけ。" }
+]},
+{ prompt:"生成された候補は？", choices:[
+{ t:"周りの壁と看板に馴染むもの", ok:true },
+{ t:"派手な色の看板", ok:false, why:"店の雰囲気が変わってしまう。" },
+{ t:"文字まで描かれた看板", ok:false, why:"生成の文字は崩れやすい。文字は後で人が入れる。" }
+]}
+],
+doneLines:["保存完了！ 生成で写真が直った", "描き足す力は道具のもの。選ぶ目は人のもの。"]
+},
+{
+id:"q35", type:"choices", tool:"irare", from:"自分へのメモ", day:"18日目・午後", title:"AI編2 ベクター生成",
+mail:"イラレの生成AIも試す。文章で指示すると、図形の案が出る。\n依頼は「星の飾り、角は5つ、色は店の色（紺と金）」。\n\n【AI2】生成案から選ぶ\n・イラレで開く\n・コマンド「えらぶ」を押して、条件に合う案を選ぶ\n・決まったら かきだす で保存\n\n速い。速いけど、条件を読むのは人だ。",
+gainSkill:"kaku", expBand:"案が決まりました",
+rounds:[
+{ prompt:"形の案は？（依頼：星、角は5つ）", choices:[
+{ t:"角が5つの星", ok:true },
+{ t:"角が6つの星", ok:false, why:"角の数が依頼と違う。" },
+{ t:"星と月のセット", ok:false, why:"頼んでいないものが混ざっている。" }
+]},
+{ prompt:"色の案は？（依頼：紺と金）", choices:[
+{ t:"紺と金の星", ok:true },
+{ t:"赤と白の星", ok:false, why:"店の色ではない。" },
+{ t:"虹色グラデーションの星", ok:false, why:"印刷で再現しにくい色だ。" }
+]}
+],
+doneLines:["保存完了！ 条件に合う案が選べた", "案の速さは道具のもの。条件の番人は人だ。"]
+},
+{
+id:"q36", type:"batch", tool:"photoshop", from:"自分へのメモ", day:"19日目・午前", title:"AI編3 一括しょり",
+mail:"商品棚の写真が6枚ある。全部、同じ補正をしたい。\n1枚で補正を決めれば、あとは自動で全部に適用される。\n\n【AI3】一括しょり\n・フォトショで開く\n・コマンド「なおす」でスライダーを出し、見本に寄せる\n・適用された6枚を確認し、失敗した2枚を見つける\n・かきだす で保存\n\n自動化は均一な仕事に強い。でも、条件の違う写真は失敗する。",
+photo:function(){ return PH.q5; },
+bad:{ b:0.74, h:-30, s:0.85 }, targetB:135, targetH:30,
+adjNote:"見本：昼の光で、品物の色がそのまま出ている感じに。",
+badTiles:[1, 4],
+doneLines:["保存完了！ 一括しょりが終わった", "速さは自動化のもの。例外を拾うのは人だ。"]
+},
+{
+id:"q37", type:"watch", tool:"unity", from:"自分へのメモ", day:"19日目・午後", title:"AI編4 エージェントにまかせる",
+mail:"エージェントに、手順のある作業を任せる。\n写真を開いて、補正して、書き出して、名前を付けて、保存する。\n\n【AI4】エージェントをみまもる\n・ゆにてぃで開く\n・コマンド「まかせる」で実行開始\n・手順が自動で進む。怪しい手順で「とめる」を押す\n・直し方を選んだら、残りは自動で終わる\n・かきだす で保存\n\n任せることと、みまもることは、セットだ。",
+steps:[
+{ t:"写真を開く" },
+{ t:"色調を補正する" },
+{ t:"下のレイヤーを書き出す", bad:true },
+{ t:"ファイル名を付ける" },
+{ t:"保存する" }
+],
+fixChoices:[
+{ t:"上のレイヤー（看板）を書き出す", ok:true },
+{ t:"そのまま下のレイヤーで進める", ok:false, why:"下のレイヤーは下書きだ。看板が表に出ない。" }
+],
+doneLines:["保存完了！ エージェントの作業が終わった", "速さはエージェントのもの。止める判断は人のもの。"]
+},
+{
+id:"q38", type:"compare", tool:"photoshop", from:"ライバル", day:"20日目・午前", title:"AI編5 まちがいさがし",
+mail:"「見たまえ、僕のポスターを。全自動のエージェントが、一瞬で作った。\n間違いなど、あるはずがない」\n\n……本当にそうか。検品してみよう。\n\n【AI5】ポスターの間違いを探す\n・フォトショで開く\n・コマンド「くらべる」を押してから、間違いの場所をクリック\n・3つ全部見つけたら かきだす で保存\n\n作る速度では負ける。でも、確かめる目では負けない。",
+poster:true,
+spots:[
+{ label:"綴りの間違い", x:240, y:52 },
+{ label:"色の指定違い", x:150, y:180 },
+{ label:"浮いているボート", x:330, y:190 }
+],
+doneLines:["保存完了！ 間違いが全部見つかった", "速さはエージェントのもの。正しさの番人は人だ。"]
+},
+{
+id:"q39", type:"choices", tool:"unity", from:"自分へのメモ", day:"20日目・午後", title:"AI編6 自動化の設計",
+mail:"最後の制作は、作業そのものではなく「分担の設計」だ。\n工程ごとに、誰がやるのが一番いいかを決める。\n\n【AI6】自動化を設計する\n・ゆにてぃで開く\n・コマンド「えらぶ」を押して、工程ごとに担当を選ぶ\n・4つ決めたら かきだす で保存\n\n道具を使う側から、自動化を設計する側へ。",
+gainSkill:"makaseru", expBand:"設計ができました",
+rounds:[
+{ prompt:"写真100枚の色調をそろえる", choices:[
+{ t:"エージェントに一括で任せる", ok:true },
+{ t:"人が1枚ずつ直す", ok:false, why:"100枚は均一な仕事。人の目は、例外のために温存したい。" },
+{ t:"生成AIに描き直させる", ok:false, why:"色調をそろえるだけなら、生成は大げさだ。" }
+]},
+{ prompt:"メインビジュアルの最終決定", choices:[
+{ t:"人が決める", ok:true },
+{ t:"エージェントに選ばせる", ok:false, why:"最後の「これだ」は、責任を持つ人の仕事だ。" },
+{ t:"AI機能のおすすめに従う", ok:false, why:"おすすめは材料にはなる。決定にはならない。" }
+]},
+{ prompt:"背景の欠けた部分を埋める", choices:[
+{ t:"AI機能（生成ぬりつぶし）に任せる", ok:true },
+{ t:"人が手で描く", ok:false, why:"描き足しは生成の得意技。人は結果の確認に回りたい。" },
+{ t:"エージェントに任せる", ok:false, why:"1か所の生成なら、道具の機能で十分だ。" }
+]},
+{ prompt:"納品前の検品", choices:[
+{ t:"人が確かめる", ok:true },
+{ t:"エージェントに任せる", ok:false, why:"作った側の目は、間違いに甘くなる。" },
+{ t:"AI機能の自動チェックだけ", ok:false, why:"自動チェックは補助。綴りや文脈の間違いは拾いきれない。" }
+]}
+],
+doneLines:["保存完了！ 自動化の設計ができた", "任せる所と、自分の目の届く所。その線引きが、設計だ。"]
 }
 ];
 if(S.progress > QUESTS.length) S.progress = QUESTS.length; /* migrate 時点では QUESTS 未定義のため、ここで上限を効かせる */
-var MAIL_ALL_DONE = "後輩が、最初のシーンを作ったらしい。タイルの地面と、ぽつんと置かれた素材。\nあの日と同じだ。でも、きっとあの子にも見えているはずだ――目指す絵が。\n\n整える、描く、作る、置く、つなぐ、動かす、まかせる、寄せる、教える。\n\n―― World Enhancer の物語は、続いていく。次の景色は、みんなの手で。";
+var MAIL_ALL_DONE = "ライバルから、短いメールが来た。\n「検品の目には、勝てなかった。……次は負けない」\n\n道具を使い、AIに任せ、自動化を設計し、それでも最後は人の目で確かめる。\n整える、描く、作る、置く、つなぐ、動かす、まかせる、寄せる、教える、設計する。\n\n―― World Enhancer の物語は、続いていく。次の景色は、みんなの手で。";
 
 /* ================= photo instances / sprite ================= */
 PH.q1 = makePhoto("assets/photo-lantern.jpg", paintMeadow);
@@ -855,7 +956,7 @@ $("btnAccept").addEventListener("click", function(){
   S.accepted = true; save(); closeWins(); renderStatus(); openTool();
 });
 $("btnMailClose").addEventListener("click", closeWins);
-function closeWins(){ $("mailWin").classList.remove("on"); $("toolWin").classList.remove("on"); }
+function closeWins(){ if(typeof clearWatch === "function") clearWatch(); $("mailWin").classList.remove("on"); $("toolWin").classList.remove("on"); }
 document.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click", closeWins); });
 $("icoTool").addEventListener("click", function(){ openTool("photoshop"); });
 $("icoIrare").addEventListener("click", function(){
@@ -900,7 +1001,7 @@ lightAng:300, lightMiss:0, sunDrag:false,
 placeCell:0, placeMiss:0,
 placements:{}, selObj:null, sceneMiss:0,
 links: q.agentLinks? q.agentLinks.map(function(pr){ return pr.slice(); }): [], linkFrom:null, linkMiss:0,
-fixedWrong:{}, fixMiss:0, spotPlaced:{}, found:{}, choiceRound:0, choiceMiss:0, cmpMiss:0,
+fixedWrong:{}, fixMiss:0, spotPlaced:{}, found:{}, choiceRound:0, choiceMiss:0, cmpMiss:0, watchIdx:0, watchMiss:0, stopMiss:0, fixedBad:false,
 path: q.start !== undefined ? [q.start] : null, pathMiss:0,
 finished:false
 };
@@ -1566,7 +1667,8 @@ ctx.fillText("赤いポイントが、エージェントのずれ。クリック
 }
 function drawCompare(){
 var q = stage.q;
-ctx.drawImage(q.photo().canvas, 0, 0);
+if(q.poster) drawPoster();
+else ctx.drawImage(q.photo().canvas, 0, 0);
 q.spots.forEach(function(sp, i){
 if(!stage.found[i]) return;
 ctx.beginPath(); ctx.arc(sp.x, sp.y, 24, 0, 7);
@@ -1586,7 +1688,7 @@ else drawArtboard();
 ctx.fillStyle = "rgba(10,16,28,.82)"; ctx.fillRect(0, 262, 480, 58);
 ctx.fillStyle = "#fff"; ctx.font = "15px sans-serif"; ctx.textAlign = "center";
 if(stage.step === "exp"){
-ctx.fillText(q.id === "q32" ? "公開の準備が整いました" : "後輩に答えました", 240, 288);
+ctx.fillText(q.expBand || "決まりました", 240, 288);
 }else if(stage.step === "pick"){
 var r = q.rounds[stage.choiceRound];
 ctx.fillText(r ? r.prompt : "", 240, 288);
@@ -1600,6 +1702,94 @@ ctx.fillStyle = "#fff"; ctx.font = "bold 17px sans-serif"; ctx.textAlign = "cent
 ctx.fillText("公開中", 408, 37);
 ctx.textAlign = "left";
 }
+}
+function drawPoster(){
+var g = ctx.createLinearGradient(0, 0, 0, 150);
+g.addColorStop(0, "#f7d9a8"); g.addColorStop(1, "#a8c8e0");
+ctx.fillStyle = g; ctx.fillRect(0, 0, 480, 150);
+ctx.fillStyle = "#7fb0d8"; ctx.fillRect(0, 150, 480, 110);
+ctx.fillStyle = "#e8dcc0"; ctx.fillRect(0, 260, 480, 60);
+ctx.fillStyle = "#5a4632"; ctx.font = "bold 30px serif"; ctx.textAlign = "center";
+ctx.fillText("WELCOM TO LAKESIDE", 240, 52);
+ctx.fillStyle = "#8a6f4d"; ctx.font = "13px sans-serif";
+ctx.fillText("〜 湖畔のポスター 〜", 240, 76);
+ctx.fillStyle = "#6b4f2e"; ctx.fillRect(146, 168, 8, 52);
+ctx.beginPath(); ctx.arc(150, 158, 17, 0, 7); ctx.fillStyle = "#7fb0ff"; ctx.fill();
+ctx.strokeStyle = "#6b4f2e"; ctx.lineWidth = 2; ctx.stroke();
+ctx.fillStyle = "#8a5a3a";
+ctx.beginPath(); ctx.moveTo(300, 196); ctx.lineTo(360, 196); ctx.lineTo(348, 208); ctx.lineTo(312, 208); ctx.closePath(); ctx.fill();
+ctx.beginPath(); ctx.moveTo(330, 196); ctx.lineTo(330, 168); ctx.lineTo(348, 196); ctx.closePath();
+ctx.fillStyle = "#f5f0e0"; ctx.fill();
+ctx.fillStyle = "#7a9a5a";
+for(var i = 0; i < 9; i++){ ctx.fillRect(20 + i * 52, 282 + (i % 3) * 9, 22, 7); }
+ctx.textAlign = "left";
+}
+function drawBatch(){
+var q = stage.q;
+if(stage.step === "adjust" || stage.step === "idle"){ drawAdjust(); return; }
+ctx.fillStyle = "#20304a"; ctx.fillRect(0, 0, 480, 320);
+var tw = 148, th = 138;
+for(var i = 0; i < 6; i++){
+var tx = 10 + (i % 3) * 156, ty = 12 + Math.floor(i / 3) * 152;
+var isBad = q.badTiles.indexOf(i) >= 0;
+if(isBad &&!stage.found[i]) ctx.filter = "brightness(0.62) saturate(0.8) hue-rotate(-38deg)";
+ctx.drawImage(q.photo().canvas, tx, ty, tw, th);
+ctx.filter = "none";
+ctx.strokeStyle = stage.found[i] ? "#f2c14e" : "#41587a"; ctx.lineWidth = stage.found[i] ? 3 : 1;
+ctx.strokeRect(tx, ty, tw, th);
+if(stage.found[i]){
+ctx.fillStyle = "rgba(10,16,28,.8)"; ctx.fillRect(tx, ty + th - 22, tw, 22);
+ctx.fillStyle = "#f2c14e"; ctx.font = "12px sans-serif"; ctx.textAlign = "center";
+ctx.fillText("失敗（条件が違う）", tx + tw / 2, ty + th - 7);
+ctx.textAlign = "left";
+}
+}
+}
+var watchTimer = null;
+function clearWatch(){ if(watchTimer){ clearInterval(watchTimer); watchTimer = null; } }
+function startWatch(){
+clearWatch();
+stage.step = "watch";
+watchTimer = setInterval(tickWatch, 1300);
+refreshCanvas(); updateUI();
+}
+function tickWatch(){
+if(!stage || stage.q.type!== "watch" || stage.step!== "watch"){ clearWatch(); return; }
+var q = stage.q;
+var badIdx = -1; q.steps.forEach(function(s, i){ if(s.bad) badIdx = i; });
+stage.watchIdx++;
+if(badIdx >= 0 && stage.watchIdx === badIdx + 1 &&!stage.fixedBad){
+clearWatch(); stage.watchMiss++; stage.watchIdx = 0; stage.step = "idle";
+stage.note = "間違いに気づかないまま終わってしまった。もう一度みまもろう。";
+refreshCanvas(); updateUI(); return;
+}
+if(stage.watchIdx >= q.steps.length){
+clearWatch(); stage.step = "exp"; stage.note = "全部の手順が終わった。あとは保存だけ。";
+}
+refreshCanvas(); updateUI();
+}
+function drawWatch(){
+var q = stage.q;
+drawArtboard();
+ctx.fillStyle = "#27436e"; ctx.font = "bold 16px sans-serif";
+ctx.fillText("🤖 エージェント実行", 24, 42);
+q.steps.forEach(function(s, i){
+var y = 84 + i * 44;
+var isDone = i < stage.watchIdx || stage.step === "exp";
+var isCur = stage.step === "watch" && i === stage.watchIdx;
+var isFix = stage.step === "fix" && i === stage.watchIdx;
+ctx.fillStyle = isCur || isFix ? "#fdf3d8" : "#fff";
+ctx.strokeStyle = isFix ? "#e8457c" : "#b9c8de"; ctx.lineWidth = isFix ? 2 : 1;
+ctx.beginPath();
+if(ctx.roundRect) ctx.roundRect(24, y - 24, 432, 34, 8); else ctx.rect(24, y - 24, 432, 34);
+ctx.fill(); ctx.stroke();
+ctx.fillStyle = "#22314d"; ctx.font = "14px sans-serif";
+var mark = isDone ? "✓ " : (isFix ? "⚠ " : (isCur ? "🤖 " : "・ "));
+ctx.fillText(mark + s.t + (isCur ? "（実行中…）" : "") + (isFix ? "（停止中）" : ""), 38, y);
+});
+ctx.fillStyle = "#5a6a86"; ctx.font = "13px sans-serif";
+if(stage.step === "idle") ctx.fillText("コマンド「まかせる」で実行が始まります", 24, 306);
+else if(stage.step === "watch") ctx.fillText("怪しい手順で「とめる」を押してください", 24, 306);
 }
 function refreshCanvas(){
 var q = curQuest();
@@ -1637,6 +1827,8 @@ else if(q.type === "aifix"){ drawAifix();}
 else if(q.type === "photoscene"){ drawPhotoScene();}
 else if(q.type === "compare"){ drawCompare();}
 else if(q.type === "choices"){ drawChoices();}
+else if(q.type === "batch"){ drawBatch();}
+else if(q.type === "watch"){ drawWatch();}
 }
 
 /* ================= briefs / commands ================= */
@@ -1852,6 +2044,44 @@ idle:"【手順】コマンド「えらぶ」を押してから、助言のボ�
 pick:"【手順】コマンド「えらぶ」を押してから、助言のボタンを押してください。\n後輩の質問は2つです。",
 exp:"答え終わりました。コマンド「かきだす」で保存してください。",
 done:"この制作は保存済みです。"
+},
+q34: {
+idle:"【手順】コマンド「えらぶ」を押して、範囲と候補を選んでください。\n生成は道具の力。選ぶのは人です。",
+pick:"【手順】コマンド「えらぶ」を押して、範囲と候補を選んでください。\n生成は道具の力。選ぶのは人です。",
+exp:"決まりました。コマンド「かきだす」で保存してください。",
+done:"この制作は保存済みです。"
+},
+q35: {
+idle:"【手順】コマンド「えらぶ」を押して、依頼の条件に合う生成案を選んでください。",
+pick:"【手順】コマンド「えらぶ」を押して、依頼の条件に合う生成案を選んでください。",
+exp:"決まりました。コマンド「かきだす」で保存してください。",
+done:"この制作は保存済みです。"
+},
+q36: {
+idle:"【手順】コマンド「なおす」でスライダーを出し、1枚目の補正を見本に寄せてください。\n決まったら「かきだす」で全枚に適用されます。",
+adjust:"【手順】コマンド「なおす」でスライダーを出し、1枚目の補正を見本に寄せてください。\n決まったら「かきだす」で全枚に適用されます。",
+check:"【手順】適用された6枚を確認してください。\n条件が違って失敗した2枚をクリックで見つけてください。",
+exp:"一括しょりが終わりました。コマンド「かきだす」で保存してください。",
+done:"この制作は保存済みです。"
+},
+q37: {
+idle:"【手順】コマンド「まかせる」で、エージェントの実行が始まります。\n手順が自動で進むので、怪しい手順で「とめる」を押してください。",
+watch:"【手順】エージェントが実行中です。\n怪しい手順で「とめる」を押してください。",
+fix:"【手順】止めた手順の直し方を、ボタンから選んでください。",
+exp:"全部の手順が終わりました。コマンド「かきだす」で保存してください。",
+done:"この制作は保存済みです。"
+},
+q38: {
+idle:"【手順】コマンド「くらべる」を押してから、ポスターの間違いをクリックしてください。\n間違いは3つあります。",
+look:"【手順】コマンド「くらべる」を押してから、ポスターの間違いをクリックしてください。\n間違いは3つあります。",
+exp:"全部見つかりました。コマンド「かきだす」で保存してください。",
+done:"この制作は保存済みです。"
+},
+q39: {
+idle:"【手順】コマンド「えらぶ」を押して、工程ごとに担当を選んでください。\n決めるのは4工程です。",
+pick:"【手順】コマンド「えらぶ」を押して、工程ごとに担当を選んでください。\n決めるのは4工程です。",
+exp:"設計ができました。コマンド「かきだす」で保存してください。",
+done:"この制作は保存済みです。"
 }
 };
 var COMMANDS = {
@@ -1878,7 +2108,9 @@ build:[["oku","おく"],["tsunagu","つなぐ"],["ugokasu","うごかす"],["exp
 aifix:[["makaseru","まかせる"],["exp","かきだす"],["back","もどる"]],
 photoscene:[["oku","おく"],["exp","かきだす"],["back","もどる"]],
 compare:[["kuraberu","くらべる"],["exp","かきだす"],["back","もどる"]],
-choices:[["erabu","えらぶ"],["exp","かきだす"],["back","もどる"]]
+choices:[["erabu","えらぶ"],["exp","かきだす"],["back","もどる"]],
+batch:[["naosu","なおす"],["exp","かきだす"],["back","もどる"]],
+watch:[["makaseru","まかせる"],["tomeru","とめる"],["exp","かきだす"],["back","もどる"]]
 };
 function setBrief(html){ $("brief").innerHTML = html;}
 function updateUI(){
@@ -1905,13 +2137,14 @@ renderStatus(); return;
 var b = BRIEFS[q.id][stage.step] || BRIEFS[q.id].idle;
 setBrief((stage.note? "" + stage.note + "\n\n": "") + b);
 if(q.type === "cutfill" && stage.step === "fill" && stage.fillArmed) $("swatches").classList.add("on");
-if(q.type === "adjust" && (stage.step === "adjust" || stage.step === "exp")) $("adjbox").classList.add("on");
+if((q.type === "adjust" && (stage.step === "adjust" || stage.step === "exp")) || (q.type === "batch" && stage.step === "adjust")) $("adjbox").classList.add("on");
 var chipSig = "";
 if(q.type === "banner" && stage.step === "copy") chipSig = "banner";
 else if(q.type === "combine" && stage.step === "pick") chipSig = "combine:" + stage.pick.join(",");
 else if(q.type === "logo" && stage.step === "color") chipSig = "logo";
 else if((q.type === "scene" || q.type === "build" || q.type === "photoscene") && stage.step === "place") chipSig = "palette:" + (stage.selObj || "");
 else if(q.type === "choices" && stage.step === "pick") chipSig = "choices:" + stage.choiceRound;
+else if(q.type === "watch" && stage.step === "fix") chipSig = "watchfix";
 if(chipSig){
 $("copies").classList.add("on");
 if(chipSig!== updateUI._chipSig) renderChips();
@@ -1940,10 +2173,12 @@ else if(id === "hikari"){ if(q.type === "render"){ en = stage.step === "light"; 
 else if(id === "oku"){ en = (stage.step === "idle" || stage.step === "place"); armed = stage.step === "place";}
 else if(id === "tsunagu"){ if(q.type === "build"){ en = stage.step === "link"; armed = stage.step === "link"; } else { en = (stage.step === "idle" || stage.step === "link"); armed = stage.step === "link"; } }
 else if(id === "ugokasu"){ if(q.type === "build"){ en = stage.step === "move"; armed = stage.step === "move"; } else { en = (stage.step === "idle" || stage.step === "path"); armed = stage.step === "path"; } }
-else if(id === "makaseru"){ en = (stage.step === "idle" || stage.step === "fix"); armed = stage.step === "fix";}
+else if(id === "makaseru" && q.type!== "watch"){ en = (stage.step === "idle" || stage.step === "fix"); armed = stage.step === "fix";}
 else if(id === "kuraberu"){ en = (stage.step === "idle" || stage.step === "look"); armed = stage.step === "look";}
+else if(id === "makaseru" && q.type === "watch"){ en = stage.step === "idle"; armed = false;}
+else if(id === "tomeru"){ en = stage.step === "watch"; armed = stage.step === "watch";}
 else if(id === "erabu"){ en = (stage.step === "idle" || stage.step === "pick"); armed = stage.step === "pick";}
-else if(id === "exp"){ en = stage.step === "exp" || (q.type === "adjust" && stage.step === "adjust");}
+else if(id === "exp"){ en = stage.step === "exp" || (q.type === "adjust" && stage.step === "adjust") || (q.type === "batch" && stage.step === "adjust");}
 btn.disabled =!en;
 btn.classList.toggle("armed", armed);
 btn.addEventListener("click", function(){ onCmd(id);});
@@ -1961,7 +2196,29 @@ else if(id === "erase" && q.type === "erase"){ stage.step = "erase"; stage.note 
 else if(id === "place" && q.type === "place"){ stage.step = "place"; stage.note = ""; refreshCanvas();}
 else if(id === "moji" && q.type === "banner"){ stage.step = "copy"; stage.note = "";}
 else if(id === "moji" && q.type === "trim"){ stage.note = "タイトルは空の部分に。写真の上で置く場所をクリック。";}
-else if(id === "naosu" && q.type === "adjust"){ stage.step = "adjust"; stage.note = ""; syncSliders();}
+else if(id === "naosu" && (q.type === "adjust" || q.type === "batch")){ stage.step = "adjust"; stage.note = ""; syncSliders();}
+else if(id === "makaseru" && q.type === "watch"){
+if(stage.step === "idle"){ stage.watchIdx = 0; stage.fixedBad = false; stage.note = ""; startWatch(); return; }
+refreshCanvas();
+}
+else if(id === "tomeru" && q.type === "watch"){
+if(stage.step === "watch"){
+clearWatch();
+var curStep = q.steps[stage.watchIdx];
+if(curStep && curStep.bad){ stage.step = "fix"; stage.note = "止めた。ここが怪しい。直し方は？"; }
+else{ stage.stopMiss++; stage.note = "そこは正しい手順だった。続ける。"; startWatch(); return; }
+}
+refreshCanvas();
+}
+else if(id === "exp" && q.type === "batch" && stage.step === "adjust"){
+var jb = judgeAdjust(stage.adj.b, stage.adj.h, q.targetB, q.targetH);
+if(jb.ok){ stage.adjustScore = jb.score; stage.step = "check"; stage.note = "適用された。失敗した2枚を見つけて。"; }
+else{
+stage.adjMiss++;
+stage.note = "差し戻し。まだ見本と違う。" + (Math.abs(stage.adj.b - q.targetB) > 14 ? "明るさが足りない／強すぎる。" : "") + (Math.abs(stage.adj.h - q.targetH) > 16 ? "色の寄りが残っている。" : "");
+}
+refreshCanvas();
+}
 else if(id === "blur" && q.type === "blur"){ stage.step = "blur"; stage.note = "";}
 else if(id === "spot" && q.type === "spotcolor"){ stage.step = "spot"; stage.note = "";}
 else if(id === "trim" && q.type === "trim"){ stage.step = "trim"; stage.note = ""; refreshCanvas();}
@@ -2220,6 +2477,22 @@ stage.lightAng = (Math.atan2(p.y - 165, p.x - 240) * 180 / Math.PI + 360) % 360;
 cv.setPointerCapture(ev.pointerId);
 refreshCanvas();
 }
+}
+else if(q.type === "batch" && stage.step === "check"){
+var tw2 = 148, th2 = 138, hitT = -1;
+for(var ti = 0; ti < 6; ti++){
+var tx2 = 10 + (ti % 3) * 156, ty2 = 12 + Math.floor(ti / 3) * 152;
+if(p.x >= tx2 && p.x <= tx2 + tw2 && p.y >= ty2 && p.y <= ty2 + th2) hitT = ti;
+}
+if(hitT >= 0 &&!stage.found[hitT]){
+if(q.badTiles.indexOf(hitT) >= 0){
+stage.found[hitT] = true;
+var leftB = q.badTiles.filter(function(bt){ return!stage.found[bt]; }).length;
+if(leftB === 0){ stage.step = "exp"; stage.note = "失敗した2枚が見つかった。あとは保存だけ。"; }
+else stage.note = "失敗した1枚を見つけた。残り1枚。";
+}else{ stage.cmpMiss++; stage.note = "その写真は大丈夫みたい。"; }
+}
+refreshCanvas(); updateUI();
 }
 else if(q.type === "compare" && stage.step === "look"){
 var hitC = -1;
@@ -2488,6 +2761,22 @@ refreshCanvas(); updateUI();
 });
 wrap.appendChild(b);
 });
+}else if(q.type === "watch"){
+q.fixChoices.forEach(function(ch){
+var b = document.createElement("button");
+b.className = "btn"; b.textContent = ch.t;
+b.dataset.chip = ch.t;
+b.addEventListener("click", function(){
+if(!stage || stage.q.type!== "watch" || stage.step!== "fix") return;
+if(ch.ok){
+stage.fixedBad = true;
+stage.watchIdx++;
+stage.note = "直した。残りは自動で進む。";
+startWatch();
+}else{ stage.stopMiss++; stage.note = ch.why || "その直し方ではダメみたい。"; refreshCanvas(); updateUI(); }
+});
+wrap.appendChild(b);
+});
 }else if(q.type === "choices"){
 var round = q.rounds[stage.choiceRound];
 if(round) round.choices.forEach(function(ch){
@@ -2527,8 +2816,8 @@ $("adjB").value = stage.adj.b;
 $("adjH").value = stage.adj.h;
 $("adjNote").textContent = stage.q.adjNote || "見本：昼の明るい光で撮ったような、品物の色がそのまま出ている感じに。";
 }
-$("adjB").addEventListener("input", function(){ if(stage && stage.q.type === "adjust"){ stage.adj.b = +this.value; refreshCanvas(); }});
-$("adjH").addEventListener("input", function(){ if(stage && stage.q.type === "adjust"){ stage.adj.h = +this.value; refreshCanvas(); }});
+$("adjB").addEventListener("input", function(){ if(stage && (stage.q.type === "adjust" || stage.q.type === "batch")){ stage.adj.b = +this.value; refreshCanvas(); }});
+$("adjH").addEventListener("input", function(){ if(stage && (stage.q.type === "adjust" || stage.q.type === "batch")){ stage.adj.h = +this.value; refreshCanvas(); }});
 
 /* ================= finish ================= */
 function finishQuest(){
@@ -2647,6 +2936,18 @@ gains.ugokasu = Math.max(6, 9 - stage.pathMiss * 2);
 lines.push("納品完了！ 湖畔の世界が完成した");
 lines.push("ゆにてぃ編、卒業だね。整える・描く・作る・置く・つなぐ・動かす。全部の道具が揃った。");
 lines.push("あとは、作りたい世界を思い描くだけだよ。");
+}
+else if(q.type === "batch"){
+gains.naosu = Math.max(8, 10 + Math.round(8 * (stage.adjustScore || 0)) - stage.adjMiss * 2);
+gains.makaseru = Math.max(6, 12 - stage.cmpMiss * 2);
+lines.push("保存完了！ 一括しょりが終わった（見つけ直し " + stage.cmpMiss + " 回）");
+lines.push("速さは自動化のもの。例外を拾うのは人だ。");
+}
+else if(q.type === "watch"){
+clearWatch();
+gains.makaseru = Math.max(8, 18 - stage.watchMiss * 4 - stage.stopMiss * 2);
+lines.push("保存完了！ エージェントの作業が終わった（見逃し " + stage.watchMiss + " 回、止め直し " + stage.stopMiss + " 回）");
+lines.push("速さはエージェントのもの。止める判断は人のもの。");
 }
 else if(q.type === "compare"){
 gains.hikari = Math.max(8, 16 - stage.cmpMiss * 2);
