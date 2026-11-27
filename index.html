@@ -165,13 +165,14 @@
     <button class="btn primary center" id="btnStart">はじめる</button>
     <button class="btn center" id="btnContinue" style="display:none">つづきから</button>
   </div>
-  <div class="ver">World Enhancer v0.6</div>
+  <div class="ver">World Enhancer v0.7</div>
 </section>
 
 <!-- ================= game (desktop) ================= -->
 <section id="game" class="screen">
   <div id="statusbar">
     <span class="day" id="dayLabel">1日目・午前</span>
+    <span class="day" id="rankLabel">称号：みならい</span>
     <span id="skills"></span>
   </div>
   <div id="desk">
@@ -181,6 +182,7 @@
       <div class="icon locked" id="icoIrare"><div class="tile" id="irareTile">🔷</div><span id="irareLabel">？？？</span></div>
       <div class="icon locked" id="icoPoser"><div class="tile">🧊</div><span id="poserLabel">？？？</span></div>
       <div class="icon locked" id="icoUnity"><div class="tile" id="unityTile">🔶</div><span id="unityLabel">？？？</span></div>
+      <div class="icon locked" id="icoAgent"><div class="tile">🤖</div><span id="agentLabel">？？？</span></div>
     </div>
     <div id="deskHint">メールが届いています。開いてみましょう。</div>
 
@@ -188,7 +190,7 @@
     <div class="win" id="mailWin">
       <div class="winbar">✉️ メール<button class="x" data-close="mailWin">×</button></div>
       <div class="winbody">
-        <div class="mailfrom">差出人：先輩（制作チーム）</div>
+        <div class="mailfrom" id="mailFrom">差出人：先輩（制作チーム）</div>
         <div class="mailtext" id="mailText"></div>
         <button class="btn" id="btnAccept">この仕事を受ける</button>
         <button class="btn ghost" id="btnMailClose">閉じる</button>
@@ -244,8 +246,20 @@ var SKILLS = [
 { id:"hikari", label:"ひかり"},
 { id:"oku", label:"おく"},
 { id:"tsunagu", label:"つなぐ"},
-{ id:"ugokasu", label:"うごかす"}
+{ id:"ugokasu", label:"うごかす"},
+{ id:"makaseru", label:"まかせる"}
 ];
+var TITLES = [
+{ xp:0, label:"みならい" },
+{ xp:50, label:"コーダー" },
+{ xp:110, label:"アプリデザイナー" },
+{ xp:170, label:"レンダラー" },
+{ xp:230, label:"デザイナー" },
+{ xp:300, label:"モデラー" },
+{ xp:385, label:"ワールドエンハンサー" }
+];
+function totalXp(){ var t = 0; SKILLS.forEach(function(k){ t += S.skills[k.id].xp; }); return t; }
+function titleFor(xp){ var cur = TITLES[0]; TITLES.forEach(function(t){ if(xp >= t.xp) cur = t; }); return cur.label; }
 function freshState(){
 var s = { skills:{}, progress:0, accepted:false};
 SKILLS.forEach(function(k){ s.skills[k.id] = { xp:0};});
@@ -567,10 +581,92 @@ nodes:[
 ],
 pairs:[["lever","lamp"]],
 start:10, goal:4, waypoint:6
+},
+{
+id:"q21", type:"scene", tool:"unity", from:"自分へのメモ", day:"11日目・午前", title:"仕事21 自分の世界の下ごしらえ",
+mail:"【第2部】仕事は卒業した。ここからは趣味の時間。\n自分のゲームを作る。舞台は、あの湖畔だ。\n\n【制作1】シーンに素材を置く\n・ゆにてぃで開く\n・コマンド「おく」で素材を選んで、見本のマスに置く\n・もう一度「おく」で照合、かきだす で保存\n\n誰に頼まれたのでもない。作りたいから作る。それが一番強い理由だ。",
+cols:5, rows:3,
+objects:[
+{ id:"tree", label:"木", emoji:"🌲" },
+{ id:"house", label:"家", emoji:"🏠" },
+{ id:"lantern", label:"ランタン", emoji:"🏮" },
+{ id:"rock", label:"岩", emoji:"🪨" }
+],
+targets:{ "1":"house", "6":"tree", "13":"lantern" },
+doneLines:["保存完了！ 自分の湖畔の下ごしらえができた", "誰のためでもない制作。でも手は覚えている。道具が体に馴染んできた。"]
+},
+{
+id:"q22", type:"aifix", tool:"unity", from:"自分へのメモ", day:"11日目・午後", title:"仕事22 AIエージェント登場",
+mail:"新しいアイテム「エージェント」を手に入れた。\nAIが下書きや定型作業を肩代わりしてくれる。\n\n【制作2】エージェントの下書きを直す\n・ゆにてぃで開く\n・コマンド「まかせる」で、エージェントが星を描く\n・ずれている赤いポイントをクリックすると、正しい位置に戻る\n・全部直れば かきだす で保存\n\n速い。でも、仕上げと確認は人の仕事だ。",
+shape:{ cx:240, cy:158, R:105, r:44 },
+wrong:[ { i:2, dx:26, dy:-18 }, { i:5, dx:-30, dy:10 }, { i:8, dx:14, dy:26 } ]
+},
+{
+id:"q23", type:"render", tool:"unity", from:"ライバル", day:"12日目・午前", title:"仕事23 ライバルの挑戦",
+mail:"「見たまえ、僕の夕景を。Gemini 4 Carbon と Godot 4.7 で一瞬だよ。\n最新技術は速い。君の時代遅れの道具では、同じ景色は作れまい」\n\n……同じ景色は作れる。道具ではなく、置く・回す・照らすの判断の問題だ。\n\n【制作3】夕景を仕上げて返す\n・ゆにてぃで開く\n・つくる（置く）→ まわす（向き）→ ひかり（光）の順に、見本に合わせる\n・かきだす で保存",
+cols:4, rows:3,
+targetCell:5, targetAngle:3, targetLight:160,
+doneLines:["保存完了！ 夕景を仕上げて、ライバルに返した", "最新技術は速い。でも、景色を決めるのは道具ではなく判断だ。"]
+},
+{
+id:"q24", type:"model", tool:"poser", from:"自分へのメモ", day:"12日目・午後", title:"仕事24 エージェントと分担",
+mail:"立体づくりはエージェントと分担することにした。\n先に積んでおいてもらったが、急いだのか、間違いが混ざっている。\n\n【制作4】積み間違いを直して完成させる\n・ポーザーで開く\n・コマンド「つくる」を押してから、セルをクリックして高さを直す\n・もう一度「つくる」で見本と照合、かきだす で保存\n\n任せることと、確かめること。両方できて、初めて分担になる。",
+cols:4, rows:3,
+target:[0,0,2,1, 1,0,0,2, 0,3,1,0],
+agentHeights:[0,0,2,2, 1,0,0,2, 0,2,1,0],
+doneLines:["保存完了！ エージェントとの分担で立体が完成した", "任せて、確かめる。それが分担の形だね。"]
+},
+{
+id:"q25", type:"render", tool:"poser", from:"自分へのメモ", day:"13日目・午前", title:"仕事25 箱庭の夕景",
+mail:"夕方、湖畔の画面を眺めていた。\n平たい世界のはずなのに、奥行きがあって、光があって、箱庭みたいに美しい。\nこの感じを、自分のゲームにも。\n\n【制作5】夕景のランタンを仕上げる\n・ポーザーで開く\n・つくる（置く）→ まわす（向き）→ ひかり（夕方の光）の順に合わせる\n・かきだす で保存\n\n決め手は光だ。HD-2D の箱庭感は、ここで決まる。",
+cols:4, rows:3,
+targetCell:9, targetAngle:0, targetLight:235,
+doneLines:["保存完了！ 箱庭の夕景が仕上がった", "平たい世界に、奥行きと光。あの美しさに近づけた気がする。"]
+},
+{
+id:"q26", type:"connect", tool:"unity", from:"自分へのメモ", day:"13日目・午後", title:"仕事26 しかけの増設",
+mail:"しかけを増やす。レバー→扉、センサー→ベル、電池→ランプ。\n1組目はエージェントが正しく結んでおいてくれた。\n\n【制作6】残りのしかけをつなぐ\n・ゆにてぃで開く\n・コマンド「つなぐ」を押してから、ノードを2つ順にクリック\n・全部つながれば かきだす で保存",
+nodes:[
+{ id:"lever", label:"レバー", emoji:"🕹️", x:70, y:70 },
+{ id:"sensor", label:"センサー", emoji:"📡", x:70, y:165 },
+{ id:"battery", label:"電池", emoji:"🔋", x:70, y:260 },
+{ id:"door", label:"扉", emoji:"🚪", x:400, y:70 },
+{ id:"bell", label:"ベル", emoji:"🔔", x:400, y:165 },
+{ id:"lamp", label:"ランプ", emoji:"💡", x:400, y:260 }
+],
+pairs:[["lever","door"],["sensor","bell"],["battery","lamp"]],
+agentLinks:[["lever","door"]]
+},
+{
+id:"q27", type:"move", tool:"unity", from:"自分へのメモ", day:"14日目・午前", title:"仕事27 巡回路の拡張",
+mail:"ボートの巡回路を延ばす。旗は2つになった。\n\n【制作7】巡回路を作る\n・ゆにてぃで開く\n・コマンド「うごかす」を押してから、隣のマスを順にクリック\n・2つの旗を通って、ゴールまで\n・もう一度「うごかす」で照合、かきだす で保存",
+cols:5, rows:3,
+start:10, goal:4, waypoints:[7, 3]
+},
+{
+id:"q28", type:"build", tool:"unity", from:"自分へのメモ", day:"14日目・午後", title:"仕事28 自分のゲームの湖畔",
+mail:"最後の制作だ。自分のゲームの湖畔を仕上げる。\n\n【制作8】湖畔の世界を完成させる\n・コマンド「おく」：木とランタンを、見本のマスに置く\n・コマンド「つなぐ」：レバーをランプにつなぐ\n・コマンド「うごかす」：旗を通って、ゴールまでの巡回路を作る\n・かきだす で保存\n\n整える、描く、作る、置く、つなぐ、動かす、まかせる。\n全部の道具と経験が、この画面に集まる。",
+cols:5, rows:3,
+objects:[
+{ id:"tree", label:"木", emoji:"🌲" },
+{ id:"house", label:"家", emoji:"🏠" },
+{ id:"lantern", label:"ランタン", emoji:"🏮" },
+{ id:"rock", label:"岩", emoji:"🪨" }
+],
+targets:{ "4":"lantern", "10":"tree" },
+nodes:[
+{ id:"lever", label:"レバー", emoji:"🕹️", x:80, y:100 },
+{ id:"battery", label:"電池", emoji:"🔋", x:80, y:238 },
+{ id:"lamp", label:"ランプ", emoji:"💡", x:392, y:100 },
+{ id:"bell", label:"ベル", emoji:"🔔", x:392, y:238 }
+],
+pairs:[["lever","lamp"]],
+start:12, goal:2, waypoint:6,
+doneLines:["保存完了！ 自分のゲームの湖畔が完成した", "整える・描く・作る・置く・つなぐ・動かす・まかせる。全部の経験が、この画面に集まった。"]
 }
 ];
 if(S.progress > QUESTS.length) S.progress = QUESTS.length; /* migrate 時点では QUESTS 未定義のため、ここで上限を効かせる */
-var MAIL_ALL_DONE = "全ての仕事を納品しました。おつかれさま。\nフォトショ、イラレ、ポーザー、ゆにてぃ。4つの道具が揃ったね。\n写真を整え、線と形を描き、立体を作り、世界に置いて、つないで、動かす。\nあとは、作りたい世界を思い描くだけだ。\n\n―― World Enhancer の旅は、ここから始まります。";
+var MAIL_ALL_DONE = "自分のゲームの湖畔が、完成した。\n夕方の光の中で、ランタンが灯り、ボートが巡回している。\n平たかった世界が、美しい箱庭になった。\n\n整える、描く、作る、置く、つなぐ、動かす、まかせる。\n道具は全部、自分の手の中にある。\n\n―― ここから先は、作りたい世界を思い描く日々だ。World Enhancer の物語は、続いていく。";
 
 /* ================= photo instances / sprite ================= */
 PH.q1 = makePhoto("assets/photo-lantern.jpg", paintMeadow);
@@ -635,6 +731,7 @@ function renderStatus(){
   });
   var q = curQuest();
   $("dayLabel").textContent = q ? q.day : QUESTS[QUESTS.length - 1].day;
+  $("rankLabel").textContent = "称号：" + titleFor(totalXp());
   $("mailBadge").style.display = (!S.accepted && q) ? "flex" : "none";
   var irareOpen = S.progress >= 8;
   $("icoIrare").classList.toggle("locked", !irareOpen);
@@ -647,6 +744,9 @@ function renderStatus(){
   $("icoUnity").classList.toggle("locked", !unityOpen);
   $("unityTile").textContent = unityOpen ? "🎮" : "🔶";
   $("unityLabel").textContent = unityOpen ? "ゆにてぃ" : "？？？";
+  var agentOpen = S.progress >= 22;
+  $("icoAgent").classList.toggle("locked", !agentOpen);
+  $("agentLabel").textContent = agentOpen ? "エージェント" : "？？？";
   $("icoTool").classList.toggle("pulse", S.accepted && !!q && questTool(q) === "photoshop");
   $("icoIrare").classList.toggle("pulse", S.accepted && !!q && questTool(q) === "irare");
   $("icoPoser").classList.toggle("pulse", S.accepted && !!q && questTool(q) === "poser");
@@ -661,8 +761,9 @@ function renderStatus(){
 function openMail(){
   closeWins();
   var q = curQuest();
-  if(!q){ $("mailText").textContent = MAIL_ALL_DONE; $("btnAccept").style.display = "none"; }
+  if(!q){ $("mailText").textContent = MAIL_ALL_DONE; $("mailFrom").textContent = "差出人：自分へのメモ"; $("btnAccept").style.display = "none"; }
   else{
+    $("mailFrom").textContent = "差出人：" + (q.from || "先輩（制作チーム）");
     $("mailText").textContent = q.mail + (S.accepted ? "\n\n（この仕事は受注済みです。" + TOOL_INFO[questTool(q)].label + "を開いて進めましょう）" : "");
     $("btnAccept").style.display = S.accepted ? "none" : "block";
   }
@@ -688,6 +789,10 @@ $("icoUnity").addEventListener("click", function(){
 if(S.progress < 16){ $("deskHint").textContent = "まだ使えません。ポーザー編を卒業すると解放されます。"; return; }
 openTool("unity");
 });
+$("icoAgent").addEventListener("click", function(){
+if(S.progress < 22){ $("deskHint").textContent = "まだ使えません。何かのきっかけで仲間になるようです。"; return; }
+$("deskHint").textContent = "AIエージェント：下書きと定型作業を肩代わりしてくれる相棒。仕上げと判断は人の仕事です。";
+});
 
 /* ================= stage (quest session) ================= */
 var stage = null;
@@ -708,12 +813,13 @@ alignPos: q.starts? q.starts.map(function(p){ return { x:p.x, y:p.y, locked:fals
 dragItem:-1, dragOff:null, strays:0,
 pick:[], combineMiss:0, combined:false,
 logoColor:-1, colorMiss:0, markPlaced:false,
-heights: Array.isArray(q.target)? q.target.map(function(){ return 0;}): null, buildMiss:0,
+heights: Array.isArray(q.agentHeights)? q.agentHeights.slice(): (Array.isArray(q.target)? q.target.map(function(){ return 0;}): null), buildMiss:0,
 angle:0, rotMiss:0, rotDrag:null,
 lightAng:300, lightMiss:0, sunDrag:false,
 placeCell:0, placeMiss:0,
 placements:{}, selObj:null, sceneMiss:0,
-links:[], linkFrom:null, linkMiss:0,
+links: q.agentLinks? q.agentLinks.map(function(pr){ return pr.slice(); }): [], linkFrom:null, linkMiss:0,
+fixedWrong:{}, fixMiss:0,
 path: q.start !== undefined ? [q.start] : null, pathMiss:0,
 finished:false
 };
@@ -1296,9 +1402,9 @@ ctx.fillText("ノードを2つ順にクリックで結ぶ", 14, 300);
 function drawPath(){
 var q = stage.q;
 drawViewport(); drawGroundGrid(q.cols, q.rows);
-var wc = cellCenter(q.waypoint, q.cols), gc = cellCenter(q.goal, q.cols), sc = cellCenter(q.start, q.cols);
+var gc = cellCenter(q.goal, q.cols), sc = cellCenter(q.start, q.cols);
 ctx.font = "22px sans-serif"; ctx.textAlign = "center";
-ctx.fillText("🚩", wc.x, wc.y);
+(q.waypoints || [q.waypoint]).forEach(function(wp){ var wc = cellCenter(wp, q.cols); ctx.fillText("🚩", wc.x, wc.y); });
 ctx.fillText("🏁", gc.x, gc.y);
 ctx.fillText("🟢", sc.x, sc.y + 26);
 ctx.textAlign = "left";
@@ -1318,6 +1424,41 @@ ctx.textAlign = "left";
 }
 ctx.fillStyle = "#cfe3ff"; ctx.font = "13px sans-serif";
 ctx.fillText("🟢スタート → 🚩旗 → 🏁ゴール。隣のマスを順にクリック", 14, 300);
+}
+function aifixPoint(q, pts, i){
+var w = null;
+q.wrong.forEach(function(x){ if(x.i === i) w = x; });
+if(w &&!stage.fixedWrong[i]) return { x:pts[i].x + w.dx, y:pts[i].y + w.dy, wrong:true };
+return { x:pts[i].x, y:pts[i].y, wrong:false };
+}
+function drawAifix(){
+var q = stage.q;
+drawArtboard();
+var pts = starPoints(q.shape.cx, q.shape.cy, q.shape.R, q.shape.r);
+ctx.beginPath();
+pts.forEach(function(p, i){ if(i === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y); });
+ctx.closePath();
+ctx.strokeStyle = "#8aa0c2"; ctx.lineWidth = 2; ctx.setLineDash([7, 5]); ctx.stroke(); ctx.setLineDash([]);
+if(stage.step === "idle"){
+ctx.fillStyle = "#5a6a86"; ctx.font = "14px sans-serif"; ctx.textAlign = "center";
+ctx.fillText("コマンド「まかせる」で、エージェントが下書きを描きます", 240, 300);
+ctx.textAlign = "left";
+return;
+}
+ctx.beginPath();
+pts.forEach(function(p, i){ var ap = aifixPoint(q, pts, i); if(i === 0) ctx.moveTo(ap.x, ap.y); else ctx.lineTo(ap.x, ap.y); });
+ctx.closePath();
+ctx.strokeStyle = "#27436e"; ctx.lineWidth = 3; ctx.stroke();
+pts.forEach(function(p, i){
+var ap = aifixPoint(q, pts, i);
+var isW = q.wrong.some(function(x){ return x.i === i; });
+ctx.beginPath(); ctx.arc(ap.x, ap.y, 8, 0, 7);
+ctx.fillStyle = isW ? (stage.fixedWrong[i] ? "#f2c14e" : "#e8457c") : "#4a90d9";
+ctx.fill();
+ctx.strokeStyle = "#fff"; ctx.lineWidth = 2; ctx.stroke();
+});
+ctx.fillStyle = "#5a6a86"; ctx.font = "13px sans-serif";
+ctx.fillText("赤いポイントが、エージェントのずれ。クリックで直る", 14, 300);
 }
 function refreshCanvas(){
 var q = curQuest();
@@ -1351,6 +1492,7 @@ if(stage.step === "link") drawConnect();
 else if(stage.step === "move" || stage.step === "exp") drawPath();
 else drawScene();
 }
+else if(q.type === "aifix"){ drawAifix();}
 }
 
 /* ================= briefs / commands ================= */
@@ -1482,6 +1624,60 @@ link:"【手順2】コマンド「つなぐ」が押せる状態です。レバ�
 move:"【手順3】コマンド「うごかす」が押せる状態です。旗を通ってゴールまでの進路を作り、もう一度「うごかす」を押してください。",
 exp:"湖畔の世界が完成しました。コマンド「かきだす」で納品してください。",
 done:"この仕事は納品済みです。"
+},
+q21: {
+idle:"【手順】コマンド「おく」を押して、素材を選んでから見本のマスに置いてください。\nもう一度「おく」を押すと照合されます。",
+place:"【手順】コマンド「おく」を押して、素材を選んでから見本のマスに置いてください。\nもう一度「おく」を押すと照合されます。",
+exp:"置けました。コマンド「かきだす」で保存してください。",
+done:"この制作は保存済みです。"
+},
+q22: {
+idle:"【手順】コマンド「まかせる」を押してください。エージェントが星の下書きを描きます。",
+fix:"【手順】赤いポイントが、エージェントのずれです。\nクリックすると正しい位置に戻ります。全部直してください。",
+exp:"下書きが直りました。コマンド「かきだす」で保存してください。",
+done:"この制作は保存済みです。"
+},
+q23: {
+idle:"【手順1】コマンド「つくる」を押してから、点線のマスをクリックしてランタンの置き場所を決めてください。\n決まったら、もう一度「つくる」を押してください。",
+place:"【手順1】コマンド「つくる」を押してから、点線のマスをクリックしてランタンの置き場所を決めてください。\n決まったら、もう一度「つくる」を押してください。",
+rot:"【手順2】コマンド「まわす」が押せる状態です。ドラッグで回して、扉の向きを見本に合わせ、もう一度「まわす」を押してください。",
+light:"【手順3】コマンド「ひかり」が押せる状態です。太陽をドラッグして光を合わせ、もう一度「ひかり」を押してください。",
+exp:"夕景が仕上がりました。コマンド「かきだす」で保存してください。",
+done:"この制作は保存済みです。"
+},
+q24: {
+idle:"【手順】コマンド「つくる」を押してから、セルをクリックして高さを直してください。\nうすい箱が見本の高さです。もう一度「つくる」を押すと照合されます。",
+build:"【手順】コマンド「つくる」を押してから、セルをクリックして高さを直してください。\nうすい箱が見本の高さです。もう一度「つくる」を押すと照合されます。",
+exp:"完成しました。コマンド「かきだす」で保存してください。",
+done:"この制作は保存済みです。"
+},
+q25: {
+idle:"【手順1】コマンド「つくる」を押してから、点線のマスをクリックしてランタンの置き場所を決めてください。\n決まったら、もう一度「つくる」を押してください。",
+place:"【手順1】コマンド「つくる」を押してから、点線のマスをクリックしてランタンの置き場所を決めてください。\n決まったら、もう一度「つくる」を押してください。",
+rot:"【手順2】コマンド「まわす」が押せる状態です。ドラッグで回して、扉の向きを見本に合わせ、もう一度「まわす」を押してください。",
+light:"【手順3】コマンド「ひかり」が押せる状態です。太陽をドラッグして夕方の光に合わせ、もう一度「ひかり」を押してください。",
+exp:"箱庭の夕景が仕上がりました。コマンド「かきだす」で保存してください。",
+done:"この制作は保存済みです。"
+},
+q26: {
+idle:"【手順】コマンド「つなぐ」を押してから、ノードを2つ順にクリックしてください。\nセンサーはベルへ、電池はランプへ。",
+link:"【手順】コマンド「つなぐ」を押してから、ノードを2つ順にクリックしてください。\nセンサーはベルへ、電池はランプへ。",
+exp:"全部つながりました。コマンド「かきだす」で保存してください。",
+done:"この制作は保存済みです。"
+},
+q27: {
+idle:"【手順】コマンド「うごかす」を押してから、スタートから隣のマスを順にクリックして進路を作ってください。\n旗は2つ。両方通ってゴールへ。もう一度「うごかす」を押すと照合されます。",
+path:"【手順】コマンド「うごかす」を押してから、スタートから隣のマスを順にクリックして進路を作ってください。\n旗は2つ。両方通ってゴールへ。もう一度「うごかす」を押すと照合されます。",
+exp:"巡回路ができました。コマンド「かきだす」で保存してください。",
+done:"この制作は保存済みです。"
+},
+q28: {
+idle:"【手順1】コマンド「おく」を押して、素材を選んでから見本のマスに置いてください。\n置けたら、もう一度「おく」を押してください。",
+place:"【手順1】コマンド「おく」を押して、素材を選んでから見本のマスに置いてください。\n置けたら、もう一度「おく」を押してください。",
+link:"【手順2】コマンド「つなぐ」が押せる状態です。レバーとランプを順にクリックして結んでください。",
+move:"【手順3】コマンド「うごかす」が押せる状態です。旗を通ってゴールまでの進路を作り、もう一度「うごかす」を押してください。",
+exp:"自分のゲームの湖畔が完成しました。コマンド「かきだす」で保存してください。",
+done:"この制作は保存済みです。"
 }
 };
 var COMMANDS = {
@@ -1504,7 +1700,8 @@ render:[["tsukuru","つくる"],["mawasu","まわす"],["hikari","ひかり"],["
 scene:[["oku","おく"],["exp","かきだす"],["back","もどる"]],
 connect:[["tsunagu","つなぐ"],["exp","かきだす"],["back","もどる"]],
 move:[["ugokasu","うごかす"],["exp","かきだす"],["back","もどる"]],
-build:[["oku","おく"],["tsunagu","つなぐ"],["ugokasu","うごかす"],["exp","かきだす"],["back","もどる"]]
+build:[["oku","おく"],["tsunagu","つなぐ"],["ugokasu","うごかす"],["exp","かきだす"],["back","もどる"]],
+aifix:[["makaseru","まかせる"],["exp","かきだす"],["back","もどる"]]
 };
 function setBrief(html){ $("brief").innerHTML = html;}
 function updateUI(){
@@ -1565,6 +1762,7 @@ else if(id === "hikari"){ if(q.type === "render"){ en = stage.step === "light"; 
 else if(id === "oku"){ en = (stage.step === "idle" || stage.step === "place"); armed = stage.step === "place";}
 else if(id === "tsunagu"){ if(q.type === "build"){ en = stage.step === "link"; armed = stage.step === "link"; } else { en = (stage.step === "idle" || stage.step === "link"); armed = stage.step === "link"; } }
 else if(id === "ugokasu"){ if(q.type === "build"){ en = stage.step === "move"; armed = stage.step === "move"; } else { en = (stage.step === "idle" || stage.step === "path"); armed = stage.step === "path"; } }
+else if(id === "makaseru"){ en = (stage.step === "idle" || stage.step === "fix"); armed = stage.step === "fix";}
 else if(id === "exp"){ en = stage.step === "exp" || (q.type === "adjust" && stage.step === "adjust");}
 btn.disabled =!en;
 btn.classList.toggle("armed", armed);
@@ -1670,12 +1868,18 @@ else if(id === "tsunagu" && q.type === "build"){
 stage.note = "ノードを2つ順にクリックして結んで。";
 refreshCanvas();
 }
+else if(id === "makaseru" && q.type === "aifix"){
+if(stage.step === "idle"){ stage.step = "fix"; stage.note = "エージェントの下書きができた。ずれている赤いポイントを直して。"; }
+refreshCanvas();
+}
 else if(id === "ugokasu" && (q.type === "move" || q.type === "build")){
 var stepName = q.type === "build" ? "move" : "path";
 if(stage.step === "idle"){ stage.step = stepName; stage.note = ""; }
 else if(stage.step === stepName){
 var lastCell = stage.path[stage.path.length - 1];
-if(lastCell === q.goal && stage.path.indexOf(q.waypoint) >= 0){
+var wps = q.waypoints || [q.waypoint];
+var allWp = wps.every(function(w){ return stage.path.indexOf(w) >= 0; });
+if(lastCell === q.goal && allWp){
 stage.step = "exp"; stage.note = "巡回路ができた。あとは納品だけ。";
 }else{
 stage.pathMiss++; stage.path = [q.start];
@@ -1820,6 +2024,30 @@ stage.lightAng = (Math.atan2(p.y - 165, p.x - 240) * 180 / Math.PI + 360) % 360;
 cv.setPointerCapture(ev.pointerId);
 refreshCanvas();
 }
+}
+else if(q.type === "aifix" && stage.step === "fix"){
+var ptsA = starPoints(q.shape.cx, q.shape.cy, q.shape.R, q.shape.r);
+var hitFix = false;
+for(var wi = 0; wi < q.wrong.length; wi++){
+var w = q.wrong[wi];
+if(stage.fixedWrong[w.i]) continue;
+var wp = { x:ptsA[w.i].x + w.dx, y:ptsA[w.i].y + w.dy };
+if(Math.hypot(p.x - wp.x, p.y - wp.y) <= 22){
+stage.fixedWrong[w.i] = true; hitFix = true;
+var leftF = q.wrong.filter(function(x){ return!stage.fixedWrong[x.i]; }).length;
+if(leftF === 0){ stage.step = "exp"; stage.note = "全部直った。あとは保存だけ。"; }
+else stage.note = "直った。残り " + leftF + " か所。";
+break;
+}
+}
+if(!hitFix){
+var nearOk = ptsA.some(function(pt, ix){
+var isW2 = q.wrong.some(function(x){ return x.i === ix; });
+return!isW2 && Math.hypot(p.x - pt.x, p.y - pt.y) <= 22;
+});
+if(nearOk){ stage.fixMiss++; stage.note = "そこは合っている。赤いポイントだけ直して。"; }
+}
+refreshCanvas(); updateUI();
 }
 else if((q.type === "scene" || q.type === "build") && stage.step === "place"){
 var ci3 = nearestCell(p, q.cols, q.rows);
@@ -2175,7 +2403,14 @@ lines.push("納品完了！ 湖畔の世界が完成した");
 lines.push("ゆにてぃ編、卒業だね。整える・描く・作る・置く・つなぐ・動かす。全部の道具が揃った。");
 lines.push("あとは、作りたい世界を思い描くだけだよ。");
 }
+else if(q.type === "aifix"){
+gains.makaseru = Math.max(8, 15 - stage.fixMiss * 3);
+lines.push("保存完了！ エージェントの下書きを仕上げた（見直し " + stage.fixMiss + " 回）");
+lines.push("エージェントが仲間になった。デスクトップにアイコンが増えているよ。");
+}
+if(q.doneLines) lines = q.doneLines.slice();
 var msg = lines[0] + "\n";
+var titleBefore = titleFor(totalXp());
 SKILLS.forEach(function(k){
 if(!gains[k.id]) return;
 var before = lvFromXp(S.skills[k.id].xp).lv;
@@ -2184,6 +2419,8 @@ var after = lvFromXp(S.skills[k.id].xp).lv;
 msg += k.label + " +" + gains[k.id] + " 経験値" +
 (after > before? "　<span class='lvup'>" + k.label + " Lv" + after + " に上がった！</span>": "") + "\n";
 });
+var titleAfter = titleFor(totalXp());
+if(titleAfter!== titleBefore) msg += "<span class='lvup'>称号が「" + titleAfter + "」に上がった！</span>\n";
 msg += lines[1];
 S.progress++; S.accepted = false;
 stage.finished = true; stage.step = "done";
