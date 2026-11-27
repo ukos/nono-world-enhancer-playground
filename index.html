@@ -165,7 +165,7 @@
     <button class="btn primary center" id="btnStart">はじめる</button>
     <button class="btn center" id="btnContinue" style="display:none">つづきから</button>
   </div>
-  <div class="ver">World Enhancer v0.5</div>
+  <div class="ver">World Enhancer v0.6</div>
 </section>
 
 <!-- ================= game (desktop) ================= -->
@@ -180,6 +180,7 @@
       <div class="icon" id="icoTool"><div class="tile">🖌️</div>フォトショ</div>
       <div class="icon locked" id="icoIrare"><div class="tile" id="irareTile">🔷</div><span id="irareLabel">？？？</span></div>
       <div class="icon locked" id="icoPoser"><div class="tile">🧊</div><span id="poserLabel">？？？</span></div>
+      <div class="icon locked" id="icoUnity"><div class="tile" id="unityTile">🔶</div><span id="unityLabel">？？？</span></div>
     </div>
     <div id="deskHint">メールが届いています。開いてみましょう。</div>
 
@@ -240,7 +241,10 @@ var SKILLS = [
 { id:"awaseru", label:"あわせる"},
 { id:"tsukuru", label:"つくる"},
 { id:"mawasu", label:"まわす"},
-{ id:"hikari", label:"ひかり"}
+{ id:"hikari", label:"ひかり"},
+{ id:"oku", label:"おく"},
+{ id:"tsunagu", label:"つなぐ"},
+{ id:"ugokasu", label:"うごかす"}
 ];
 function freshState(){
 var s = { skills:{}, progress:0, accepted:false};
@@ -513,10 +517,60 @@ id:"q16", type:"render", tool:"poser", day:"8日目・午後", title:"仕事16 �
 mail:"ポーザー編の卒業制作だよ。\n\n【仕事16】湖畔にランタンを置く\n3つの工程で仕上げる。\n・コマンド「つくる」：点線のマスをクリックしてランタンの置き場所を決め、もう一度押して確定\n・コマンド「まわす」：ドラッグで回して、扉の向きを見本に合わせる\n・コマンド「ひかり」：太陽をドラッグして、夕方の光に合わせる\n・かきだす で納品\n\n置く、回す、照らす。3Dの基本が全部入った仕事だよ。",
 cols:4, rows:3,
 targetCell:6, targetAngle:1, targetLight:205
+},
+{
+id:"q17", type:"scene", tool:"unity", day:"9日目・午前", title:"仕事17 シーンに置く",
+mail:"今日から最後のツール「ゆにてぃ」だよ。素材を作る道具ではなく、世界を組み立てる道具だ。\n\n【仕事17】見本どおりに置く\n・ゆにてぃで開く\n・コマンド「おく」を押すと素材チップが出る。素材を選んでから、置きたいマスをクリック\n・もう一度「おく」を押すと、見本と照合される\n・合えば かきだす で納品\n\nフォトショで整え、イラレで描き、ポーザーで作った素材は、ここに置かれて初めて世界になる。",
+cols:5, rows:3,
+objects:[
+{ id:"tree", label:"木", emoji:"🌲" },
+{ id:"house", label:"家", emoji:"🏠" },
+{ id:"lantern", label:"ランタン", emoji:"🏮" },
+{ id:"rock", label:"岩", emoji:"🪨" }
+],
+targets:{ "3":"tree", "7":"house", "11":"lantern" }
+},
+{
+id:"q18", type:"connect", tool:"unity", day:"9日目・午後", title:"仕事18 つなぐ",
+mail:"9日目、午後。\n\n【仕事18】しかけをつなぐ\n・ゆにてぃで開く\n・コマンド「つなぐ」を押してから、ノードを2つ順にクリックすると線が結ばれる\n・レバーは扉へ、電池はランプへ。関係ないノードもある\n・全部つながれば かきだす で納品\n\n置いただけの物は、つながって初めて「しかけ」になる。これがプログラムの入口だよ。",
+nodes:[
+{ id:"lever", label:"レバー", emoji:"🕹️", x:80, y:92 },
+{ id:"battery", label:"電池", emoji:"🔋", x:80, y:238 },
+{ id:"door", label:"扉", emoji:"🚪", x:392, y:92 },
+{ id:"lamp", label:"ランプ", emoji:"💡", x:392, y:238 },
+{ id:"bell", label:"ベル", emoji:"🔔", x:236, y:158 }
+],
+pairs:[["lever","door"],["battery","lamp"]]
+},
+{
+id:"q19", type:"move", tool:"unity", day:"10日目・午前", title:"仕事19 動かす",
+mail:"10日目。\n\n【仕事19】ボートの巡回路を作る\n・ゆにてぃで開く\n・コマンド「うごかす」を押してから、スタートから隣のマスを順にクリックして進路を作る\n・真ん中の旗のマスを通って、ゴールのマスまで\n・もう一度「うごかす」を押すと照合される\n・合えば かきだす で納品\n\n静止した世界に、動きが入る。ゲームらしくなるのはここからだよ。",
+cols:5, rows:3,
+start:10, goal:4, waypoint:7
+},
+{
+id:"q20", type:"build", tool:"unity", day:"10日目・午後", title:"仕事20 卒業制作：湖畔の世界",
+mail:"最後の仕事だよ。ゆにてぃ編の卒業制作でもあり、全ツールの卒業制作でもある。\n\n【仕事20】湖畔の世界を作る\n3つの工程で仕上げる。\n・コマンド「おく」：素材を選んで、見本のマスに木とランタンを置く\n・コマンド「つなぐ」：レバーをランプにつなぐ\n・コマンド「うごかす」：ボートの巡回路を、旗を通ってゴールまで作る\n・かきだす で納品\n\n整える、描く、作る、置く、つなぐ、動かす。全部の道具の集大成だよ。",
+cols:5, rows:3,
+objects:[
+{ id:"tree", label:"木", emoji:"🌲" },
+{ id:"house", label:"家", emoji:"🏠" },
+{ id:"lantern", label:"ランタン", emoji:"🏮" },
+{ id:"rock", label:"岩", emoji:"🪨" }
+],
+targets:{ "2":"tree", "12":"lantern" },
+nodes:[
+{ id:"lever", label:"レバー", emoji:"🕹️", x:80, y:100 },
+{ id:"battery", label:"電池", emoji:"🔋", x:80, y:238 },
+{ id:"lamp", label:"ランプ", emoji:"💡", x:392, y:100 },
+{ id:"bell", label:"ベル", emoji:"🔔", x:392, y:238 }
+],
+pairs:[["lever","lamp"]],
+start:10, goal:4, waypoint:6
 }
 ];
 if(S.progress > QUESTS.length) S.progress = QUESTS.length; /* migrate 時点では QUESTS 未定義のため、ここで上限を効かせる */
-var MAIL_ALL_DONE = "ポーザー編も卒業だね。おつかれさま。\nつくる、まわす、ひかり。立体を扱う力がついた。道具が3つ揃ったよ。\n\n次のツール「ゆにてぃ」は準備中。いよいよ世界そのものを作る道具だ。楽しみにしていて。";
+var MAIL_ALL_DONE = "全ての仕事を納品しました。おつかれさま。\nフォトショ、イラレ、ポーザー、ゆにてぃ。4つの道具が揃ったね。\n写真を整え、線と形を描き、立体を作り、世界に置いて、つないで、動かす。\nあとは、作りたい世界を思い描くだけだ。\n\n―― World Enhancer の旅は、ここから始まります。";
 
 /* ================= photo instances / sprite ================= */
 PH.q1 = makePhoto("assets/photo-lantern.jpg", paintMeadow);
@@ -564,7 +618,8 @@ function curQuest(){ return S.progress < QUESTS.length ? QUESTS[S.progress] : nu
 var TOOL_INFO = {
 photoshop:{ label:"フォトショ", icon:"🖌️" },
 irare:{ label:"イラレ", icon:"✒️" },
-poser:{ label:"ポーザー", icon:"🧊" }
+poser:{ label:"ポーザー", icon:"🧊" },
+unity:{ label:"ゆにてぃ", icon:"🎮" }
 };
 function questTool(q){ return q.tool || "photoshop"; }
 function renderStatus(){
@@ -588,9 +643,14 @@ function renderStatus(){
   var poserOpen = S.progress >= 12;
   $("icoPoser").classList.toggle("locked", !poserOpen);
   $("poserLabel").textContent = poserOpen ? "ポーザー" : "？？？";
+  var unityOpen = S.progress >= 16;
+  $("icoUnity").classList.toggle("locked", !unityOpen);
+  $("unityTile").textContent = unityOpen ? "🎮" : "🔶";
+  $("unityLabel").textContent = unityOpen ? "ゆにてぃ" : "？？？";
   $("icoTool").classList.toggle("pulse", S.accepted && !!q && questTool(q) === "photoshop");
   $("icoIrare").classList.toggle("pulse", S.accepted && !!q && questTool(q) === "irare");
   $("icoPoser").classList.toggle("pulse", S.accepted && !!q && questTool(q) === "poser");
+  $("icoUnity").classList.toggle("pulse", S.accepted && !!q && questTool(q) === "unity");
   $("deskHint").textContent =
     !q ? "全ての仕事は納品済みです。おつかれさまでした。" :
     !S.accepted ? "メールが届いています。開いてみましょう。" :
@@ -624,6 +684,10 @@ $("icoPoser").addEventListener("click", function(){
 if(S.progress < 12){ $("deskHint").textContent = "まだ使えません。イラレ編を卒業すると解放されます。"; return; }
 openTool("poser");
 });
+$("icoUnity").addEventListener("click", function(){
+if(S.progress < 16){ $("deskHint").textContent = "まだ使えません。ポーザー編を卒業すると解放されます。"; return; }
+openTool("unity");
+});
 
 /* ================= stage (quest session) ================= */
 var stage = null;
@@ -648,6 +712,9 @@ heights: Array.isArray(q.target)? q.target.map(function(){ return 0;}): null, bu
 angle:0, rotMiss:0, rotDrag:null,
 lightAng:300, lightMiss:0, sunDrag:false,
 placeCell:0, placeMiss:0,
+placements:{}, selObj:null, sceneMiss:0,
+links:[], linkFrom:null, linkMiss:0,
+path: q.start !== undefined ? [q.start] : null, pathMiss:0,
 finished:false
 };
 }
@@ -1156,6 +1223,102 @@ if(stage.step === "light" || stage.step === "exp") drawSun(stage.lightAng, true)
 ctx.fillStyle = "#fff"; ctx.font = "13px sans-serif";
 ctx.fillText("点線のマスと うすいランタン が見本", 14, 300);
 }
+/* ================= unity (scene building) ================= */
+function handleNodeClick(nd){
+var q = stage.q;
+if(!stage.linkFrom){ stage.linkFrom = nd.id; stage.note = ""; }
+else if(stage.linkFrom === nd.id){ stage.linkFrom = null; stage.note = ""; }
+else{
+var a = stage.linkFrom, b = nd.id; stage.linkFrom = null;
+var isPair = function(pr){ return (pr[0] === a && pr[1] === b) || (pr[0] === b && pr[1] === a); };
+if(q.pairs.some(isPair) &&!stage.links.some(isPair)){
+stage.links.push([a, b]);
+if(stage.links.length >= q.pairs.length){
+if(q.type === "build"){ stage.step = "move"; stage.note = "つながった。最後は うごかす。"; }
+else{ stage.step = "exp"; stage.note = "全部つながった。あとは納品だけ。"; }
+}else stage.note = "つながった。残り " + (q.pairs.length - stage.links.length) + " 本。";
+}
+else if(stage.links.some(isPair)){ stage.note = "そこはもうつながっている。"; }
+else{ stage.linkMiss++; stage.note = "その組み合わせは違う。依頼の内容を見直して。"; }
+}
+refreshCanvas(); updateUI();
+}
+function objEmoji(q, id){
+var o = (q.objects || []).filter(function(x){ return x.id === id; })[0];
+return o ? o.emoji : "？";
+}
+function drawScene(){
+var q = stage.q;
+drawViewport(); drawGroundGrid(q.cols, q.rows);
+Object.keys(q.targets).forEach(function(k){
+var c = cellCenter(Number(k), q.cols), w = ISO.tw / 2, h = ISO.th / 2;
+ctx.beginPath();
+ctx.moveTo(c.x, c.y - h); ctx.lineTo(c.x + w, c.y); ctx.lineTo(c.x, c.y + h); ctx.lineTo(c.x - w, c.y);
+ctx.closePath(); ctx.strokeStyle = "#fff"; ctx.lineWidth = 2; ctx.setLineDash([6, 4]); ctx.stroke(); ctx.setLineDash([]);
+ctx.globalAlpha = 0.35; ctx.font = "26px sans-serif"; ctx.textAlign = "center";
+ctx.fillText(objEmoji(q, q.targets[k]), c.x, c.y - 2);
+ctx.globalAlpha = 1; ctx.textAlign = "left";
+});
+Object.keys(stage.placements).forEach(function(k){
+var c = cellCenter(Number(k), q.cols);
+ctx.font = "30px sans-serif"; ctx.textAlign = "center";
+ctx.fillText(objEmoji(q, stage.placements[k]), c.x, c.y - 2);
+ctx.textAlign = "left";
+});
+ctx.fillStyle = "#cfe3ff"; ctx.font = "13px sans-serif";
+ctx.fillText("点線のマスと うすい絵 が見本。素材チップを選んでからマスをクリック", 14, 300);
+}
+function drawConnect(){
+var q = stage.q;
+drawViewport();
+ctx.lineWidth = 4;
+stage.links.forEach(function(pr){
+var a = q.nodes.filter(function(n){ return n.id === pr[0]; })[0];
+var b = q.nodes.filter(function(n){ return n.id === pr[1]; })[0];
+ctx.strokeStyle = "#ffd94d";
+ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+});
+q.nodes.forEach(function(n){
+var linked = stage.links.some(function(pr){ return pr[0] === n.id || pr[1] === n.id; });
+ctx.beginPath(); ctx.arc(n.x, n.y, 27, 0, 7);
+ctx.fillStyle = linked ? "#3f6212" : "#3a4a61"; ctx.fill();
+ctx.lineWidth = stage.linkFrom === n.id ? 4 : 2;
+ctx.strokeStyle = stage.linkFrom === n.id ? "#ffd94d" : "#7d94b5"; ctx.stroke();
+ctx.font = "28px sans-serif"; ctx.textAlign = "center";
+ctx.fillText(n.emoji, n.x, n.y + 10);
+ctx.fillStyle = "#cfe3ff"; ctx.font = "12px sans-serif";
+ctx.fillText(n.label, n.x, n.y + 44);
+ctx.textAlign = "left";
+});
+ctx.fillStyle = "#cfe3ff"; ctx.font = "13px sans-serif";
+ctx.fillText("ノードを2つ順にクリックで結ぶ", 14, 300);
+}
+function drawPath(){
+var q = stage.q;
+drawViewport(); drawGroundGrid(q.cols, q.rows);
+var wc = cellCenter(q.waypoint, q.cols), gc = cellCenter(q.goal, q.cols), sc = cellCenter(q.start, q.cols);
+ctx.font = "22px sans-serif"; ctx.textAlign = "center";
+ctx.fillText("🚩", wc.x, wc.y);
+ctx.fillText("🏁", gc.x, gc.y);
+ctx.fillText("🟢", sc.x, sc.y + 26);
+ctx.textAlign = "left";
+if(stage.path && stage.path.length > 1){
+ctx.strokeStyle = "#ffd94d"; ctx.lineWidth = 3; ctx.beginPath();
+stage.path.forEach(function(idx, i){
+var c = cellCenter(idx, q.cols);
+if(i === 0) ctx.moveTo(c.x, c.y); else ctx.lineTo(c.x, c.y);
+});
+ctx.stroke();
+}
+if(stage.path && stage.path.length){
+var last = cellCenter(stage.path[stage.path.length - 1], q.cols);
+ctx.font = "26px sans-serif"; ctx.textAlign = "center";
+ctx.fillText("🚤", last.x, last.y - 4);
+ctx.textAlign = "left";
+}
+ctx.fillStyle = "#cfe3ff"; ctx.font = "13px sans-serif";
+ctx.fillText("🟢スタート → 🚩旗 → 🏁ゴール。隣のマスを順にクリック", 14, 300);
+}
 function refreshCanvas(){
 var q = curQuest();
 if(!q){ ctx.drawImage(PH.q4.canvas, 0, 0); return;}
@@ -1180,6 +1343,14 @@ else if(q.type === "model"){ drawModel();}
 else if(q.type === "rotate"){ drawRotate();}
 else if(q.type === "light"){ drawLight();}
 else if(q.type === "render"){ drawRender();}
+else if(q.type === "scene"){ drawScene();}
+else if(q.type === "connect"){ drawConnect();}
+else if(q.type === "move"){ drawPath();}
+else if(q.type === "build"){
+if(stage.step === "link") drawConnect();
+else if(stage.step === "move" || stage.step === "exp") drawPath();
+else drawScene();
+}
 }
 
 /* ================= briefs / commands ================= */
@@ -1285,6 +1456,32 @@ rot:"【手順2】コマンド「まわす」が押せる状態です。ドラ�
 light:"【手順3】コマンド「ひかり」が押せる状態です。太陽をドラッグして夕方の光に合わせ、もう一度「ひかり」を押してください。",
 exp:"卒業制作が完成しました。コマンド「かきだす」で納品してください。",
 done:"この仕事は納品済みです。"
+},
+q17: {
+idle:"【手順】コマンド「おく」を押すと素材チップが出ます。\n素材を選んでから、見本のマスをクリックして置いてください。もう一度「おく」を押すと照合されます。",
+place:"【手順】コマンド「おく」を押すと素材チップが出ます。\n素材を選んでから、見本のマスをクリックして置いてください。もう一度「おく」を押すと照合されます。",
+exp:"見本どおりに置けました。コマンド「かきだす」で納品してください。",
+done:"この仕事は納品済みです。"
+},
+q18: {
+idle:"【手順】コマンド「つなぐ」を押してから、ノードを2つ順にクリックしてください。\nレバーは扉へ、電池はランプへ。",
+link:"【手順】コマンド「つなぐ」を押してから、ノードを2つ順にクリックしてください。\nレバーは扉へ、電池はランプへ。",
+exp:"全部つながりました。コマンド「かきだす」で納品してください。",
+done:"この仕事は納品済みです。"
+},
+q19: {
+idle:"【手順】コマンド「うごかす」を押してから、スタートから隣のマスを順にクリックして進路を作ってください。\n旗のマスを通ってゴールへ。もう一度「うごかす」を押すと照合されます。",
+path:"【手順】コマンド「うごかす」を押してから、スタートから隣のマスを順にクリックして進路を作ってください。\n旗のマスを通ってゴールへ。もう一度「うごかす」を押すと照合されます。",
+exp:"巡回路ができました。コマンド「かきだす」で納品してください。",
+done:"この仕事は納品済みです。"
+},
+q20: {
+idle:"【手順1】コマンド「おく」を押して、素材を選んでから見本のマスに置いてください。\n置けたら、もう一度「おく」を押してください。",
+place:"【手順1】コマンド「おく」を押して、素材を選んでから見本のマスに置いてください。\n置けたら、もう一度「おく」を押してください。",
+link:"【手順2】コマンド「つなぐ」が押せる状態です。レバーとランプを順にクリックして結んでください。",
+move:"【手順3】コマンド「うごかす」が押せる状態です。旗を通ってゴールまでの進路を作り、もう一度「うごかす」を押してください。",
+exp:"湖畔の世界が完成しました。コマンド「かきだす」で納品してください。",
+done:"この仕事は納品済みです。"
 }
 };
 var COMMANDS = {
@@ -1303,7 +1500,11 @@ logo:[["kaku","かく"],["naraberu","ならべる"],["exp","かきだす"],["bac
 model:[["tsukuru","つくる"],["exp","かきだす"],["back","もどる"]],
 rotate:[["mawasu","まわす"],["exp","かきだす"],["back","もどる"]],
 light:[["hikari","ひかり"],["exp","かきだす"],["back","もどる"]],
-render:[["tsukuru","つくる"],["mawasu","まわす"],["hikari","ひかり"],["exp","かきだす"],["back","もどる"]]
+render:[["tsukuru","つくる"],["mawasu","まわす"],["hikari","ひかり"],["exp","かきだす"],["back","もどる"]],
+scene:[["oku","おく"],["exp","かきだす"],["back","もどる"]],
+connect:[["tsunagu","つなぐ"],["exp","かきだす"],["back","もどる"]],
+move:[["ugokasu","うごかす"],["exp","かきだす"],["back","もどる"]],
+build:[["oku","おく"],["tsunagu","つなぐ"],["ugokasu","うごかす"],["exp","かきだす"],["back","もどる"]]
 };
 function setBrief(html){ $("brief").innerHTML = html;}
 function updateUI(){
@@ -1335,6 +1536,7 @@ var chipSig = "";
 if(q.type === "banner" && stage.step === "copy") chipSig = "banner";
 else if(q.type === "combine" && stage.step === "pick") chipSig = "combine:" + stage.pick.join(",");
 else if(q.type === "logo" && stage.step === "color") chipSig = "logo";
+else if((q.type === "scene" || q.type === "build") && stage.step === "place") chipSig = "palette:" + (stage.selObj || "");
 if(chipSig){
 $("copies").classList.add("on");
 if(chipSig!== updateUI._chipSig) renderChips();
@@ -1360,6 +1562,9 @@ else if(id === "awaseru"){ en = (stage.step === "idle" || stage.step === "pick")
 else if(id === "tsukuru"){ if(q.type === "render"){ en = (stage.step === "idle" || stage.step === "place"); armed = stage.step === "place"; } else { en = (stage.step === "idle" || stage.step === "build"); armed = stage.step === "build"; } }
 else if(id === "mawasu"){ if(q.type === "render"){ en = stage.step === "rot"; armed = stage.step === "rot"; } else { en = (stage.step === "idle" || stage.step === "rot"); armed = stage.step === "rot"; } }
 else if(id === "hikari"){ if(q.type === "render"){ en = stage.step === "light"; armed = stage.step === "light"; } else { en = (stage.step === "idle" || stage.step === "light"); armed = stage.step === "light"; } }
+else if(id === "oku"){ en = (stage.step === "idle" || stage.step === "place"); armed = stage.step === "place";}
+else if(id === "tsunagu"){ if(q.type === "build"){ en = stage.step === "link"; armed = stage.step === "link"; } else { en = (stage.step === "idle" || stage.step === "link"); armed = stage.step === "link"; } }
+else if(id === "ugokasu"){ if(q.type === "build"){ en = stage.step === "move"; armed = stage.step === "move"; } else { en = (stage.step === "idle" || stage.step === "path"); armed = stage.step === "path"; } }
 else if(id === "exp"){ en = stage.step === "exp" || (q.type === "adjust" && stage.step === "adjust");}
 btn.disabled =!en;
 btn.classList.toggle("armed", armed);
@@ -1441,6 +1646,41 @@ if(stage.step === "light"){
 var dl2 = Math.abs(((stage.lightAng - q.targetLight + 540) % 360) - 180);
 if(dl2 <= 25){ stage.step = "exp"; stage.note = "仕上がった。あとは納品だけ。"; }
 else{ stage.lightMiss++; stage.note = "夕方の光はもっと低い。影の向きを見て。"; }
+}
+refreshCanvas();
+}
+else if(id === "oku" && (q.type === "scene" || q.type === "build")){
+if(stage.step === "idle"){ stage.step = "place"; stage.note = ""; }
+else if(stage.step === "place"){
+var diffS = 0;
+Object.keys(q.targets).forEach(function(k){ if(stage.placements[k]!== q.targets[k]) diffS++; });
+Object.keys(stage.placements).forEach(function(k){ if(!(k in q.targets)) diffS++; });
+if(diffS === 0){
+if(q.type === "build"){ stage.step = "link"; stage.note = "置けた。次は つなぐ。"; }
+else{ stage.step = "exp"; stage.note = "見本どおり。あとは納品だけ。"; }
+}else{ stage.sceneMiss++; stage.note = "見本と違うマスが " + diffS + " か所ある。うすい絵のマスを見て。"; }
+}
+refreshCanvas();
+}
+else if(id === "tsunagu" && q.type === "connect"){
+if(stage.step === "idle"){ stage.step = "link"; stage.note = ""; }
+refreshCanvas();
+}
+else if(id === "tsunagu" && q.type === "build"){
+stage.note = "ノードを2つ順にクリックして結んで。";
+refreshCanvas();
+}
+else if(id === "ugokasu" && (q.type === "move" || q.type === "build")){
+var stepName = q.type === "build" ? "move" : "path";
+if(stage.step === "idle"){ stage.step = stepName; stage.note = ""; }
+else if(stage.step === stepName){
+var lastCell = stage.path[stage.path.length - 1];
+if(lastCell === q.goal && stage.path.indexOf(q.waypoint) >= 0){
+stage.step = "exp"; stage.note = "巡回路ができた。あとは納品だけ。";
+}else{
+stage.pathMiss++; stage.path = [q.start];
+stage.note = lastCell!== q.goal ? "ゴールまで届いていない。旗を通ってゴールへ。" : "旗のマスを通っていない。";
+}
 }
 refreshCanvas();
 }
@@ -1580,6 +1820,33 @@ stage.lightAng = (Math.atan2(p.y - 165, p.x - 240) * 180 / Math.PI + 360) % 360;
 cv.setPointerCapture(ev.pointerId);
 refreshCanvas();
 }
+}
+else if((q.type === "scene" || q.type === "build") && stage.step === "place"){
+var ci3 = nearestCell(p, q.cols, q.rows);
+if(ci3 >= 0){
+if(!stage.selObj){ stage.note = "先に素材チップを選んで。"; }
+else if(stage.placements[ci3] === stage.selObj){ delete stage.placements[ci3]; stage.note = ""; }
+else{ stage.placements[ci3] = stage.selObj; stage.note = ""; }
+}
+refreshCanvas(); updateUI();
+}
+else if((q.type === "connect" || q.type === "build") && stage.step === "link"){
+for(var ni = 0; ni < q.nodes.length; ni++){
+var nd = q.nodes[ni];
+if(Math.hypot(p.x - nd.x, p.y - nd.y) <= 32){ handleNodeClick(nd); break; }
+}
+}
+else if(((q.type === "move" && stage.step === "path") || (q.type === "build" && stage.step === "move"))){
+var ci4 = nearestCell(p, q.cols, q.rows);
+if(ci4 >= 0 && stage.path){
+var lastP = stage.path[stage.path.length - 1];
+var lx = lastP % q.cols, ly = Math.floor(lastP / q.cols);
+var px2 = ci4 % q.cols, py2 = Math.floor(ci4 / q.cols);
+if(stage.path.length > 1 && ci4 === stage.path[stage.path.length - 2]){ stage.path.pop(); stage.note = ""; }
+else if(Math.abs(px2 - lx) + Math.abs(py2 - ly) === 1 && stage.path.indexOf(ci4) < 0){ stage.path.push(ci4); stage.note = ""; }
+else if(ci4!== lastP){ stage.note = "隣のマスを順にクリック。戻る時は1つ前のマスを押して。"; }
+}
+refreshCanvas(); updateUI();
 }
 else if(q.type === "render"){
 if(stage.step === "place"){
@@ -1754,6 +2021,18 @@ refreshCanvas(); updateUI();
 });
 wrap.appendChild(b);
 });
+}else if(q.type === "scene" || q.type === "build"){
+q.objects.forEach(function(o){
+var b = document.createElement("button");
+b.className = "btn"; b.textContent = o.emoji + " " + o.label;
+b.dataset.chip = o.id;
+b.classList.toggle("armed", stage.selObj === o.id);
+b.addEventListener("click", function(){
+stage.selObj = (stage.selObj === o.id ? null : o.id);
+refreshCanvas(); updateUI();
+});
+wrap.appendChild(b);
+});
 }else if(q.type === "logo"){
 q.palettes.forEach(function(pal, i){
 var b = document.createElement("button");
@@ -1872,6 +2151,29 @@ gains.mawasu = Math.max(6, 9 - stage.rotMiss * 2);
 gains.hikari = Math.max(6, 9 - stage.lightMiss * 2);
 lines.push("納品完了！ 湖畔のランタンが仕上がった");
 lines.push("ポーザー編、卒業だね。置く・回す・照らすが揃った。次の「ゆにてぃ」では、世界そのものを作るよ。");
+}
+else if(q.type === "scene"){
+gains.oku = Math.max(8, 16 - stage.sceneMiss * 2) + (stage.sceneMiss === 0 ? 4 : 0);
+lines.push("納品完了！ シーンが見本どおりになった（照合のやり直し " + stage.sceneMiss + " 回）");
+lines.push("素材は、置かれて初めて世界になる。次はしかけだよ。");
+}
+else if(q.type === "connect"){
+gains.tsunagu = Math.max(8, 15 - stage.linkMiss * 3);
+lines.push("納品完了！ しかけが全部つながった（結び直し " + stage.linkMiss + " 回）");
+lines.push("つなぐ、はプログラムの入口。物の間に意味が生まれたね。");
+}
+else if(q.type === "move"){
+gains.ugokasu = Math.max(8, 15 - stage.pathMiss * 3);
+lines.push("納品完了！ ボートの巡回路ができた（作り直し " + stage.pathMiss + " 回）");
+lines.push("世界が動き出した。あとは卒業制作だけだよ。");
+}
+else if(q.type === "build"){
+gains.oku = Math.max(6, 9 - stage.sceneMiss * 2);
+gains.tsunagu = Math.max(6, 9 - stage.linkMiss * 2);
+gains.ugokasu = Math.max(6, 9 - stage.pathMiss * 2);
+lines.push("納品完了！ 湖畔の世界が完成した");
+lines.push("ゆにてぃ編、卒業だね。整える・描く・作る・置く・つなぐ・動かす。全部の道具が揃った。");
+lines.push("あとは、作りたい世界を思い描くだけだよ。");
 }
 var msg = lines[0] + "\n";
 SKILLS.forEach(function(k){
