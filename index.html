@@ -165,7 +165,7 @@
     <button class="btn primary center" id="btnStart">はじめる</button>
     <button class="btn center" id="btnContinue" style="display:none">つづきから</button>
   </div>
-  <div class="ver">World Enhancer v0.7</div>
+  <div class="ver">World Enhancer v0.8</div>
 </section>
 
 <!-- ================= game (desktop) ================= -->
@@ -214,7 +214,7 @@
             <div class="adjbox" id="adjbox">
               <label>あかるさ <input type="range" id="adjB" min="60" max="150" value="100"></label>
               <label>いろあい <input type="range" id="adjH" min="-60" max="60" value="0"></label>
-              <div class="adjnote">見本：昼の明るい光で撮ったような、品物の色がそのまま出ている感じに。</div>
+              <div class="adjnote" id="adjNote">見本：昼の明るい光で撮ったような、品物の色がそのまま出ている感じに。</div>
             </div>
             <div class="cmdbox" id="cmdbox"></div>
             <div class="resultBox" id="resultBox"></div>
@@ -663,10 +663,37 @@ nodes:[
 pairs:[["lever","lamp"]],
 start:12, goal:2, waypoint:6,
 doneLines:["保存完了！ 自分のゲームの湖畔が完成した", "整える・描く・作る・置く・つなぐ・動かす・まかせる。全部の経験が、この画面に集まった。"]
+},
+{
+id:"q29", type:"photoscene", tool:"unity", from:"自分へのメモ", day:"15日目・午前", title:"追加1 はじめてのゆにてぃ",
+mail:"残っていた記録写真を見つけた。\nはじめて ゆにてぃ を触った日の、最初のシーンだ。タイルの地面と、ぽつんと置かれた素材たち。\n\n【追加1】最初のシーンを再現する\n・ゆにてぃで開く\n・コマンド「おく」で素材を選んで、写真の場所に置き直す\n・全部置けたら、もう一度「おく」で照合、かきだす で保存\n\n下手くそだ。でも、ここから全部始まった。",
+photo:function(){ return PH.unityfirst; },
+objects:[
+{ id:"rock", label:"岩", emoji:"🪨" },
+{ id:"bush", label:"しげみ", emoji:"🌿" },
+{ id:"redbush", label:"あかいしげみ", emoji:"🍂" }
+],
+spots:[
+{ o:"rock", x:72, y:209 },
+{ o:"redbush", x:160, y:210 },
+{ o:"redbush", x:284, y:208 },
+{ o:"redbush", x:420, y:213 },
+{ o:"bush", x:44, y:283 }
+],
+doneLines:["保存完了！ 最初のシーンが再現できた", "タイルと素材だけの画面。それでも、あの日は「世界ができた」と思えたんだ。"]
+},
+{
+id:"q30", type:"adjust", tool:"photoshop", from:"自分へのメモ", day:"15日目・午後", title:"追加2 到達イメージ",
+mail:"到達イメージと、今の lite の画面を見比べた。\n水も、岸も、登場人物も同じ。違うのは、光と空気だ。\n\n【追加2】光と色を、到達イメージに寄せる\n・フォトショで開く（右上が到達イメージ）\n・コマンド「なおす」でスライダーを出し、あかるさ と いろあい を寄せる\n・近づいたら かきだす で保存\n\n画そのものは道具が描く。でも「どこを目指すか」を決めるのは、人の目だ。",
+photo:function(){ return PH.lite; },
+ref:function(){ return PH.full; },
+bad:{ b:0.8, h:-24, s:0.88 }, targetB:130, targetH:28,
+adjNote:"見本：右上の到達イメージ。朝の光と、澄んだ空気の感じに。",
+doneLines:["保存完了！ 光と色が、到達イメージに寄った", "目指す絵があるから、道具の腕が上がる。到達イメージは、遠くで光っている。"]
 }
 ];
 if(S.progress > QUESTS.length) S.progress = QUESTS.length; /* migrate 時点では QUESTS 未定義のため、ここで上限を効かせる */
-var MAIL_ALL_DONE = "自分のゲームの湖畔が、完成した。\n夕方の光の中で、ランタンが灯り、ボートが巡回している。\n平たかった世界が、美しい箱庭になった。\n\n整える、描く、作る、置く、つなぐ、動かす、まかせる。\n道具は全部、自分の手の中にある。\n\n―― ここから先は、作りたい世界を思い描く日々だ。World Enhancer の物語は、続いていく。";
+var MAIL_ALL_DONE = "到達イメージは、まだ遠くにある。\nでも、目指す絵が見えた。最初のタイルの画面から、ここまで来た。\n整える、描く、作る、置く、つなぐ、動かす、まかせる、寄せる。\n道具は全部、自分の手の中にある。\n\n―― World Enhancer の物語は、続いていく。次の景色は、自分の手で。";
 
 /* ================= photo instances / sprite ================= */
 PH.q1 = makePhoto("assets/photo-lantern.jpg", paintMeadow);
@@ -675,6 +702,9 @@ PH.q3 = makePhoto("assets/photo-sunset.jpg", paintSunset);
 PH.q4 = makePhoto("assets/photo-banner.jpg", paintBanner);
 PH.q5 = makePhoto("assets/photo-shelf.jpg", paintShelf);
 PH.q6 = makePhoto("assets/photo-stall.jpg", paintStall);
+PH.unityfirst = makePhoto("assets/photo-unity-first.jpg", paintMeadow);
+PH.lite = makePhoto("assets/photo-lite.jpg", paintSunset);
+PH.full = makePhoto("assets/photo-full.jpg", paintSunset);
 var blurCache = {};
 function blurOf(rec, key){
 if(!blurCache[key]){
@@ -819,7 +849,7 @@ lightAng:300, lightMiss:0, sunDrag:false,
 placeCell:0, placeMiss:0,
 placements:{}, selObj:null, sceneMiss:0,
 links: q.agentLinks? q.agentLinks.map(function(pr){ return pr.slice(); }): [], linkFrom:null, linkMiss:0,
-fixedWrong:{}, fixMiss:0,
+fixedWrong:{}, fixMiss:0, spotPlaced:{},
 path: q.start !== undefined ? [q.start] : null, pathMiss:0,
 finished:false
 };
@@ -1064,6 +1094,29 @@ var q = stage.q;
 ctx.filter = "brightness(" + (q.bad.b * stage.adj.b / 100).toFixed(3) + ") saturate(" + q.bad.s + ") hue-rotate(" + (q.bad.h + stage.adj.h) + "deg)";
 ctx.drawImage(q.photo().canvas, 0, 0);
 ctx.filter = "none";
+if(q.ref){
+var rp = q.ref();
+if(rp.ready) ctx.drawImage(rp.canvas, 322, 8, 150, 100);
+ctx.strokeStyle = "#f2c14e"; ctx.lineWidth = 2; ctx.strokeRect(322, 8, 150, 100);
+ctx.fillStyle = "rgba(10,16,28,.75)"; ctx.fillRect(322, 108, 150, 18);
+ctx.fillStyle = "#f2c14e"; ctx.font = "12px sans-serif"; ctx.textAlign = "center";
+ctx.fillText("到達イメージ", 397, 121);
+ctx.textAlign = "left";
+}
+}
+function drawPhotoScene(){
+var q = stage.q;
+ctx.drawImage(q.photo().canvas, 0, 0);
+q.spots.forEach(function(sp, i){
+var obj = null; q.objects.forEach(function(o){ if(o.id === sp.o) obj = o; });
+ctx.font = "30px sans-serif"; ctx.textAlign = "center";
+if(stage.spotPlaced[i]){ ctx.fillText(obj.emoji, sp.x, sp.y + 10); }
+else{
+ctx.save(); ctx.globalAlpha = 0.45; ctx.fillText(obj.emoji, sp.x, sp.y + 10); ctx.restore();
+ctx.beginPath(); ctx.arc(sp.x, sp.y, 24, 0, 7); ctx.strokeStyle = "#fff"; ctx.lineWidth = 2; ctx.setLineDash([5, 4]); ctx.stroke(); ctx.setLineDash([]);
+}
+});
+ctx.textAlign = "left";
 }
 function drawBlur(){
 var q = stage.q;
@@ -1493,6 +1546,7 @@ else if(stage.step === "move" || stage.step === "exp") drawPath();
 else drawScene();
 }
 else if(q.type === "aifix"){ drawAifix();}
+else if(q.type === "photoscene"){ drawPhotoScene();}
 }
 
 /* ================= briefs / commands ================= */
@@ -1678,6 +1732,18 @@ link:"【手順2】コマンド「つなぐ」が押せる状態です。レバ�
 move:"【手順3】コマンド「うごかす」が押せる状態です。旗を通ってゴールまでの進路を作り、もう一度「うごかす」を押してください。",
 exp:"自分のゲームの湖畔が完成しました。コマンド「かきだす」で保存してください。",
 done:"この制作は保存済みです。"
+},
+q29: {
+idle:"【手順】コマンド「おく」を押して、素材を選んでから、写真の点線の丸の場所に置き直してください。\n全部置けたら、もう一度「おく」を押してください。",
+place:"【手順】コマンド「おく」を押して、素材を選んでから、写真の点線の丸の場所に置き直してください。\n全部置けたら、もう一度「おく」を押してください。",
+exp:"再現できました。コマンド「かきだす」で保存してください。",
+done:"この制作は保存済みです。"
+},
+q30: {
+idle:"【手順】コマンド「なおす」を押すと、スライダーが出ます。\n右上の到達イメージ目指して、<b>あかるさ</b> と <b>いろあい</b> を寄せてください。近づいたら「かきだす」で保存。",
+adjust:"【手順】コマンド「なおす」を押すと、スライダーが出ます。\n右上の到達イメージ目指して、<b>あかるさ</b> と <b>いろあい</b> を寄せてください。近づいたら「かきだす」で保存。",
+exp:"寄せられました。コマンド「かきだす」で保存してください。",
+done:"この制作は保存済みです。"
 }
 };
 var COMMANDS = {
@@ -1701,7 +1767,8 @@ scene:[["oku","おく"],["exp","かきだす"],["back","もどる"]],
 connect:[["tsunagu","つなぐ"],["exp","かきだす"],["back","もどる"]],
 move:[["ugokasu","うごかす"],["exp","かきだす"],["back","もどる"]],
 build:[["oku","おく"],["tsunagu","つなぐ"],["ugokasu","うごかす"],["exp","かきだす"],["back","もどる"]],
-aifix:[["makaseru","まかせる"],["exp","かきだす"],["back","もどる"]]
+aifix:[["makaseru","まかせる"],["exp","かきだす"],["back","もどる"]],
+photoscene:[["oku","おく"],["exp","かきだす"],["back","もどる"]]
 };
 function setBrief(html){ $("brief").innerHTML = html;}
 function updateUI(){
@@ -1733,7 +1800,7 @@ var chipSig = "";
 if(q.type === "banner" && stage.step === "copy") chipSig = "banner";
 else if(q.type === "combine" && stage.step === "pick") chipSig = "combine:" + stage.pick.join(",");
 else if(q.type === "logo" && stage.step === "color") chipSig = "logo";
-else if((q.type === "scene" || q.type === "build") && stage.step === "place") chipSig = "palette:" + (stage.selObj || "");
+else if((q.type === "scene" || q.type === "build" || q.type === "photoscene") && stage.step === "place") chipSig = "palette:" + (stage.selObj || "");
 if(chipSig){
 $("copies").classList.add("on");
 if(chipSig!== updateUI._chipSig) renderChips();
@@ -1866,6 +1933,14 @@ refreshCanvas();
 }
 else if(id === "tsunagu" && q.type === "build"){
 stage.note = "ノードを2つ順にクリックして結んで。";
+refreshCanvas();
+}
+else if(id === "oku" && q.type === "photoscene"){
+if(stage.step === "idle"){ stage.step = "place"; stage.note = ""; }
+else if(stage.step === "place"){
+if(q.spots.every(function(_, i){ return stage.spotPlaced[i]; })){ stage.step = "exp"; stage.note = "再現できた。あとは保存だけ。"; }
+else{ stage.sceneMiss++; stage.note = "まだ置けていない場所がある。"; }
+}
 refreshCanvas();
 }
 else if(id === "makaseru" && q.type === "aifix"){
@@ -2024,6 +2099,26 @@ stage.lightAng = (Math.atan2(p.y - 165, p.x - 240) * 180 / Math.PI + 360) % 360;
 cv.setPointerCapture(ev.pointerId);
 refreshCanvas();
 }
+}
+else if(q.type === "photoscene" && stage.step === "place"){
+if(!stage.selObj){ stage.note = "先に素材を選んで。"; }
+else{
+var hitS = -1;
+q.spots.forEach(function(sp, i){ if(!stage.spotPlaced[i] && Math.hypot(p.x - sp.x, p.y - sp.y) <= 32) hitS = i; });
+if(hitS >= 0){
+var sp2 = q.spots[hitS];
+if(sp2.o === stage.selObj){
+stage.spotPlaced[hitS] = true;
+var leftS = q.spots.filter(function(_, i){ return!stage.spotPlaced[i]; }).length;
+stage.note = leftS === 0 ? "全部置けた。あとは照合と保存。" : "置けた。残り " + leftS + " か所。";
+}else{
+stage.sceneMiss++;
+var want = null; q.objects.forEach(function(o){ if(o.id === sp2.o) want = o; });
+stage.note = "そこは「" + (want? want.label: "") + "」の場所みたい。";
+}
+}
+}
+refreshCanvas(); updateUI();
 }
 else if(q.type === "aifix" && stage.step === "fix"){
 var ptsA = starPoints(q.shape.cx, q.shape.cy, q.shape.R, q.shape.r);
@@ -2249,7 +2344,7 @@ refreshCanvas(); updateUI();
 });
 wrap.appendChild(b);
 });
-}else if(q.type === "scene" || q.type === "build"){
+}else if(q.type === "scene" || q.type === "build" || q.type === "photoscene"){
 q.objects.forEach(function(o){
 var b = document.createElement("button");
 b.className = "btn"; b.textContent = o.emoji + " " + o.label;
@@ -2281,6 +2376,7 @@ function syncSliders(){
 if(!stage) return;
 $("adjB").value = stage.adj.b;
 $("adjH").value = stage.adj.h;
+$("adjNote").textContent = stage.q.adjNote || "見本：昼の明るい光で撮ったような、品物の色がそのまま出ている感じに。";
 }
 $("adjB").addEventListener("input", function(){ if(stage && stage.q.type === "adjust"){ stage.adj.b = +this.value; refreshCanvas(); }});
 $("adjH").addEventListener("input", function(){ if(stage && stage.q.type === "adjust"){ stage.adj.h = +this.value; refreshCanvas(); }});
@@ -2402,6 +2498,11 @@ gains.ugokasu = Math.max(6, 9 - stage.pathMiss * 2);
 lines.push("納品完了！ 湖畔の世界が完成した");
 lines.push("ゆにてぃ編、卒業だね。整える・描く・作る・置く・つなぐ・動かす。全部の道具が揃った。");
 lines.push("あとは、作りたい世界を思い描くだけだよ。");
+}
+else if(q.type === "photoscene"){
+gains.oku = Math.max(8, 16 - stage.sceneMiss * 2);
+lines.push("保存完了！ 最初のシーンを再現した（置き直し " + stage.sceneMiss + " 回）");
+lines.push("タイルと素材だけの画面。それでも、あの日は「世界ができた」と思えたんだ。");
 }
 else if(q.type === "aifix"){
 gains.makaseru = Math.max(8, 15 - stage.fixMiss * 3);
