@@ -165,14 +165,14 @@
     <button class="btn primary center" id="btnStart">はじめる</button>
     <button class="btn center" id="btnContinue" style="display:none">つづきから</button>
   </div>
-  <div class="ver">World Enhancer v0.10</div>
+  <div class="ver">World Enhancer v0.11</div>
 </section>
 
 <!-- ================= game (desktop) ================= -->
 <section id="game" class="screen">
   <div id="statusbar">
     <span class="day" id="dayLabel">1日目・午前</span>
-    <span class="day" id="rankLabel">称号：みならい</span>
+    <span class="day" id="rankLabel">称号：コーダー</span>
     <span id="skills"></span>
   </div>
   <div id="desk">
@@ -250,16 +250,15 @@ var SKILLS = [
 { id:"makaseru", label:"まかせる"}
 ];
 var TITLES = [
-{ xp:0, label:"みならい" },
-{ xp:50, label:"コーダー" },
-{ xp:110, label:"アプリデザイナー" },
-{ xp:170, label:"レンダラー" },
-{ xp:230, label:"デザイナー" },
-{ xp:300, label:"モデラー" },
-{ xp:385, label:"ワールドエンハンサー" }
+{ at:0, label:"コーダー" },
+{ at:12, label:"デザイナー" },
+{ at:14, label:"モデラー" },
+{ at:16, label:"レンダラー" },
+{ at:20, label:"アプリデザイナー" },
+{ at:28, label:"ワールドエンハンサー" }
 ];
 function totalXp(){ var t = 0; SKILLS.forEach(function(k){ t += S.skills[k.id].xp; }); return t; }
-function titleFor(xp){ var cur = TITLES[0]; TITLES.forEach(function(t){ if(xp >= t.xp) cur = t; }); return cur.label; }
+function titleFor(){ var cur = TITLES[0]; TITLES.forEach(function(t){ if(S.progress >= t.at) cur = t; }); return cur.label; }
 function freshState(){
 var s = { skills:{}, progress:0, accepted:false};
 SKILLS.forEach(function(k){ s.skills[k.id] = { xp:0};});
@@ -913,7 +912,7 @@ function renderStatus(){
   });
   var q = curQuest();
   $("dayLabel").textContent = q ? q.day : QUESTS[QUESTS.length - 1].day;
-  $("rankLabel").textContent = "称号：" + titleFor(totalXp());
+  $("rankLabel").textContent = "称号：" + titleFor();
   $("mailBadge").style.display = (!S.accepted && q) ? "flex" : "none";
   var irareOpen = S.progress >= 8;
   $("icoIrare").classList.toggle("locked", !irareOpen);
@@ -2971,7 +2970,7 @@ lines.push("エージェントが仲間になった。デスクトップにア�
 }
 if(q.doneLines) lines = q.doneLines.slice();
 var msg = lines[0] + "\n";
-var titleBefore = titleFor(totalXp());
+var titleBefore = titleFor();
 SKILLS.forEach(function(k){
 if(!gains[k.id]) return;
 var before = lvFromXp(S.skills[k.id].xp).lv;
@@ -2980,7 +2979,7 @@ var after = lvFromXp(S.skills[k.id].xp).lv;
 msg += k.label + " +" + gains[k.id] + " 経験値" +
 (after > before? "　<span class='lvup'>" + k.label + " Lv" + after + " に上がった！</span>": "") + "\n";
 });
-var titleAfter = titleFor(totalXp());
+var titleAfter = titleFor();
 if(titleAfter!== titleBefore) msg += "<span class='lvup'>称号が「" + titleAfter + "」に上がった！</span>\n";
 msg += lines[1];
 S.progress++; S.accepted = false;
