@@ -57,6 +57,9 @@
     font-size:13px; flex-wrap:wrap;
   }
   #statusbar .day{font-weight:800; color:var(--acc); white-space:nowrap}
+  #skillTabs{display:flex; gap:6px; flex-wrap:wrap; align-items:center; margin:2px 0}
+  .stab{background:#22385a; border:1px solid #4a6a94; color:#cfe0f2; border-radius:8px 8px 0 0; padding:4px 12px; font-size:12.5px; cursor:pointer; font-family:inherit}
+  .stab.on{background:var(--acc); color:#22314d; font-weight:800; border-color:var(--acc)}
   #skills{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
   .skill{
     display:flex; align-items:center; gap:6px; background:var(--panel);
@@ -165,7 +168,7 @@
     <button class="btn primary center" id="btnStart">はじめる</button>
     <button class="btn center" id="btnContinue" style="display:none">つづきから</button>
   </div>
-  <div class="ver">World Enhancer v0.12</div>
+  <div class="ver">World Enhancer v0.13</div>
 </section>
 
 <!-- ================= game (desktop) ================= -->
@@ -173,6 +176,7 @@
   <div id="statusbar">
     <span class="day" id="dayLabel">1日目・午前</span>
     <span class="day" id="rankLabel">称号：みならい</span>
+    <span id="skillTabs"></span>
     <span id="skills"></span>
   </div>
   <div id="desk">
@@ -230,24 +234,24 @@
 /* ================= skills / state ================= */
 var SAVE_KEY = "worldenhancer-save-v1";
 var SKILLS = [
-{ id:"kiritoru", label:"きりとる"},
-{ id:"nuru", label:"ぬる"},
-{ id:"kesu", label:"けす"},
-{ id:"kasaneru", label:"かさねる"},
-{ id:"mojiire", label:"もじをいれる"},
-{ id:"naosu", label:"なおす"},
-{ id:"bokasu", label:"ぼかす"},
-{ id:"ironokosu", label:"いろをのこす"},
-{ id:"kaku", label:"かく"},
-{ id:"naraberu", label:"ならべる"},
-{ id:"awaseru", label:"あわせる"},
-{ id:"tsukuru", label:"つくる"},
-{ id:"mawasu", label:"まわす"},
-{ id:"hikari", label:"ひかり"},
-{ id:"oku", label:"おく"},
-{ id:"tsunagu", label:"つなぐ"},
-{ id:"ugokasu", label:"うごかす"},
-{ id:"makaseru", label:"まかせる"}
+{ id:"kiritoru", tab:"photo", label:"きりとる"},
+{ id:"nuru", tab:"photo", label:"ぬる"},
+{ id:"kesu", tab:"photo", label:"けす"},
+{ id:"kasaneru", tab:"photo", label:"かさねる"},
+{ id:"mojiire", tab:"photo", label:"もじをいれる"},
+{ id:"naosu", tab:"photo", label:"なおす"},
+{ id:"bokasu", tab:"photo", label:"ぼかす"},
+{ id:"ironokosu", tab:"photo", label:"いろをのこす"},
+{ id:"kaku", tab:"irare", label:"かく"},
+{ id:"naraberu", tab:"irare", label:"ならべる"},
+{ id:"awaseru", tab:"irare", label:"あわせる"},
+{ id:"tsukuru", tab:"poser", label:"つくる"},
+{ id:"mawasu", tab:"poser", label:"まわす"},
+{ id:"hikari", tab:"poser", label:"ひかり"},
+{ id:"oku", tab:"unity", label:"おく"},
+{ id:"tsunagu", tab:"unity", label:"つなぐ"},
+{ id:"ugokasu", tab:"unity", label:"うごかす"},
+{ id:"makaseru", tab:"ai", label:"まかせる"}
 ];
 var TITLES = [
 { at:0, label:"みならい" },
@@ -257,6 +261,14 @@ var TITLES = [
 { at:20, label:"アプリデザイナー" },
 { at:28, label:"ワールドエンハンサー" }
 ];
+var SKILL_TABS = [
+{ id:"photo", label:"フォトショ" },
+{ id:"irare", label:"イラレ" },
+{ id:"poser", label:"ポーザー" },
+{ id:"unity", label:"ゆにてぃ" },
+{ id:"ai", label:"AI" }
+];
+var skillTab = "photo";
 function totalXp(){ var t = 0; SKILLS.forEach(function(k){ t += S.skills[k.id].xp; }); return t; }
 function titleFor(){ var cur = TITLES[0]; TITLES.forEach(function(t){ if(S.progress >= t.at) cur = t; }); return cur.label; }
 function freshState(){
@@ -900,8 +912,16 @@ unity:{ label:"ゆにてぃ", icon:"🎮" }
 };
 function questTool(q){ return q.tool || "photoshop"; }
 function renderStatus(){
+  var twrap = $("skillTabs"); twrap.innerHTML = "";
+  SKILL_TABS.forEach(function(t){
+    var b = document.createElement("button");
+    b.className = "stab" + (skillTab === t.id ? " on" : "");
+    b.textContent = t.label;
+    b.addEventListener("click", function(){ skillTab = t.id; renderStatus(); });
+    twrap.appendChild(b);
+  });
   var wrap = $("skills"); wrap.innerHTML = "";
-  SKILLS.forEach(function(k){
+  SKILLS.filter(function(k){ return k.tab === skillTab; }).forEach(function(k){
     var info = lvFromXp(S.skills[k.id].xp);
     var el = document.createElement("span");
     el.className = "skill";
@@ -1011,6 +1031,7 @@ if(q && toolId && questTool(q) !== toolId){
 $("deskHint").textContent = TOOL_INFO[questTool(q)].label + "の仕事が届いています。そちらのアイコンを開いてください。";
 return;
 }
+skillTab = (toolId || (q ? questTool(q) : "photoshop")) === "photoshop" ? "photo" : (toolId || (q ? questTool(q) : "photoshop"));
 var info = TOOL_INFO[toolId || (q ? questTool(q) : "photoshop")];
 $("toolTitle").textContent = info.icon + " " + info.label + (q? " ― " + q.title: "");
 $("toolWin").classList.add("on");
