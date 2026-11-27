@@ -165,7 +165,7 @@
     <button class="btn primary center" id="btnStart">はじめる</button>
     <button class="btn center" id="btnContinue" style="display:none">つづきから</button>
   </div>
-  <div class="ver">World Enhancer v0.8</div>
+  <div class="ver">World Enhancer v0.9</div>
 </section>
 
 <!-- ================= game (desktop) ================= -->
@@ -690,10 +690,61 @@ ref:function(){ return PH.full; },
 bad:{ b:0.8, h:-24, s:0.88 }, targetB:130, targetH:28,
 adjNote:"見本：右上の到達イメージ。朝の光と、澄んだ空気の感じに。",
 doneLines:["保存完了！ 光と色が、到達イメージに寄った", "目指す絵があるから、道具の腕が上がる。到達イメージは、遠くで光っている。"]
+},
+{
+id:"q31", type:"compare", tool:"photoshop", from:"自分へのメモ", day:"16日目・午前", title:"追加3 見くらべ",
+mail:"到達イメージを、じっと見た。\nlite の画面になかったものが、たくさんある。\n\n【追加3】増えたものを探す\n・フォトショで開く\n・コマンド「くらべる」を押してから、lite になかったものをクリック\n・6つ全部見つけたら かきだす で保存\n\n違いが分かるということは、作れるようになるということだ。",
+photo:function(){ return PH.full; },
+spots:[
+{ label:"木", x:62, y:140 },
+{ label:"霧の遠景", x:240, y:42 },
+{ label:"水面のきらめき", x:408, y:165 },
+{ label:"波打ち際", x:255, y:200 },
+{ label:"赤い草", x:152, y:218 },
+{ label:"苔むした岩", x:55, y:268 }
+],
+doneLines:["保存完了！ 違いが全部見つかった", "木、岩、草、波、水の光、遠くの霧。景色は、要素の集まりだ。"]
+},
+{
+id:"q32", type:"choices", tool:"unity", from:"自分へのメモ", day:"16日目・午後", title:"追加4 公開の日",
+mail:"自分のゲームができた。あとは公開だ。\n\n【追加4】公開の設定を決める\n・ゆにてぃで開く\n・コマンド「えらぶ」を押してから、選択肢のボタンを押す\n・公開範囲と紹介文を決めたら かきだす で保存\n\n作って終わりじゃない。誰かの画面に届いて、初めて完成だ。",
+photo:function(){ return PH.full; },
+gainSkill:"tsunagu",
+rounds:[
+{ prompt:"公開範囲は？", choices:[
+{ t:"公開（誰でも遊べる）", ok:true },
+{ t:"非公開のまま", ok:false, why:"非公開では、誰の画面にも届かない。" },
+{ t:"パスワード付き", ok:false, why:"趣味の公開に鍵は重い。まずは開いておこう。" }
+]},
+{ prompt:"紹介文は？", choices:[
+{ t:"夕方の湖畔を歩く、小さな箱庭のゲームです", ok:true },
+{ t:"史上最高のグラフィックを誇る大作RPG！！", ok:false, why:"誇大な文は、せっかくの景色を安くする。" },
+{ t:"ゲームです。よろしくお願いします", ok:false, why:"何の景色か伝わらない。もっと具体的に。" }
+]}
+],
+doneLines:["保存完了！ ゲームが公開された", "作った世界が、誰かの画面に届く。つなぐ、の本当の意味はこれだ。"]
+},
+{
+id:"q33", type:"choices", tool:"unity", from:"後輩", day:"17日目・午前", title:"追加5 教える側",
+mail:"後輩ができた。ゲームを作ってみたいのだそうだ。\n質問が2つ届いている。\n\n【追加5】後輩の質問に答える\n・ゆにてぃで開く\n・コマンド「えらぶ」を押してから、助言のボタンを押す\n・2つ答えたら かきだす で保存\n\n教えることは、自分の理解を確かめることでもある。",
+gainSkill:"mojiire",
+rounds:[
+{ prompt:"後輩「素材がうまく描けません…」", choices:[
+{ t:"まず道具の基本を、小さく試すといいよ", ok:true },
+{ t:"最新ツールに変えれば描けるよ", ok:false, why:"道具のせいじゃない。基本が先だ、と伝えてあげよう。" },
+{ t:"エージェントに全部任せればいいよ", ok:false, why:"任せるのは、確かめられるようになってからだ。" }
+]},
+{ prompt:"後輩「画面が平たくなってしまいます…」", choices:[
+{ t:"光と奥行きを意識してみて", ok:true },
+{ t:"解像度を上げれば立体になるよ", ok:false, why:"平たさの正体は、解像度じゃない。" },
+{ t:"素材をたくさん置けばなんとかなるよ", ok:false, why:"量ではなく、置き方と光だ。" }
+]}
+],
+doneLines:["保存完了！ 後輩に答えた", "教える側になった。でも、学ぶことはまだ終わらない。"]
 }
 ];
 if(S.progress > QUESTS.length) S.progress = QUESTS.length; /* migrate 時点では QUESTS 未定義のため、ここで上限を効かせる */
-var MAIL_ALL_DONE = "到達イメージは、まだ遠くにある。\nでも、目指す絵が見えた。最初のタイルの画面から、ここまで来た。\n整える、描く、作る、置く、つなぐ、動かす、まかせる、寄せる。\n道具は全部、自分の手の中にある。\n\n―― World Enhancer の物語は、続いていく。次の景色は、自分の手で。";
+var MAIL_ALL_DONE = "後輩が、最初のシーンを作ったらしい。タイルの地面と、ぽつんと置かれた素材。\nあの日と同じだ。でも、きっとあの子にも見えているはずだ――目指す絵が。\n\n整える、描く、作る、置く、つなぐ、動かす、まかせる、寄せる、教える。\n\n―― World Enhancer の物語は、続いていく。次の景色は、みんなの手で。";
 
 /* ================= photo instances / sprite ================= */
 PH.q1 = makePhoto("assets/photo-lantern.jpg", paintMeadow);
@@ -849,7 +900,7 @@ lightAng:300, lightMiss:0, sunDrag:false,
 placeCell:0, placeMiss:0,
 placements:{}, selObj:null, sceneMiss:0,
 links: q.agentLinks? q.agentLinks.map(function(pr){ return pr.slice(); }): [], linkFrom:null, linkMiss:0,
-fixedWrong:{}, fixMiss:0, spotPlaced:{},
+fixedWrong:{}, fixMiss:0, spotPlaced:{}, found:{}, choiceRound:0, choiceMiss:0, cmpMiss:0,
 path: q.start !== undefined ? [q.start] : null, pathMiss:0,
 finished:false
 };
@@ -1513,6 +1564,43 @@ ctx.strokeStyle = "#fff"; ctx.lineWidth = 2; ctx.stroke();
 ctx.fillStyle = "#5a6a86"; ctx.font = "13px sans-serif";
 ctx.fillText("赤いポイントが、エージェントのずれ。クリックで直る", 14, 300);
 }
+function drawCompare(){
+var q = stage.q;
+ctx.drawImage(q.photo().canvas, 0, 0);
+q.spots.forEach(function(sp, i){
+if(!stage.found[i]) return;
+ctx.beginPath(); ctx.arc(sp.x, sp.y, 24, 0, 7);
+ctx.strokeStyle = "#f2c14e"; ctx.lineWidth = 3; ctx.stroke();
+ctx.fillStyle = "rgba(10,16,28,.78)";
+var w = sp.label.length * 14 + 14;
+ctx.fillRect(sp.x - w / 2, sp.y + 27, w, 19);
+ctx.fillStyle = "#f2c14e"; ctx.font = "12px sans-serif"; ctx.textAlign = "center";
+ctx.fillText(sp.label, sp.x, sp.y + 41);
+ctx.textAlign = "left";
+});
+}
+function drawChoices(){
+var q = stage.q;
+if(q.photo){ ctx.drawImage(q.photo().canvas, 0, 0); }
+else drawArtboard();
+ctx.fillStyle = "rgba(10,16,28,.82)"; ctx.fillRect(0, 262, 480, 58);
+ctx.fillStyle = "#fff"; ctx.font = "15px sans-serif"; ctx.textAlign = "center";
+if(stage.step === "exp"){
+ctx.fillText(q.id === "q32" ? "公開の準備が整いました" : "後輩に答えました", 240, 288);
+}else if(stage.step === "pick"){
+var r = q.rounds[stage.choiceRound];
+ctx.fillText(r ? r.prompt : "", 240, 288);
+}else{
+ctx.fillText("コマンド「えらぶ」で始めます", 240, 288);
+}
+ctx.textAlign = "left";
+if(q.id === "q32" && stage.step === "exp"){
+ctx.fillStyle = "#e8457c"; ctx.fillRect(352, 14, 112, 34);
+ctx.fillStyle = "#fff"; ctx.font = "bold 17px sans-serif"; ctx.textAlign = "center";
+ctx.fillText("公開中", 408, 37);
+ctx.textAlign = "left";
+}
+}
 function refreshCanvas(){
 var q = curQuest();
 if(!q){ ctx.drawImage(PH.q4.canvas, 0, 0); return;}
@@ -1547,6 +1635,8 @@ else drawScene();
 }
 else if(q.type === "aifix"){ drawAifix();}
 else if(q.type === "photoscene"){ drawPhotoScene();}
+else if(q.type === "compare"){ drawCompare();}
+else if(q.type === "choices"){ drawChoices();}
 }
 
 /* ================= briefs / commands ================= */
@@ -1744,6 +1834,24 @@ idle:"【手順】コマンド「なおす」を押すと、スライダーが�
 adjust:"【手順】コマンド「なおす」を押すと、スライダーが出ます。\n右上の到達イメージ目指して、<b>あかるさ</b> と <b>いろあい</b> を寄せてください。近づいたら「かきだす」で保存。",
 exp:"寄せられました。コマンド「かきだす」で保存してください。",
 done:"この制作は保存済みです。"
+},
+q31: {
+idle:"【手順】コマンド「くらべる」を押してから、到達イメージの中で lite になかったものをクリックしてください。\n全部で6つあります。",
+look:"【手順】コマンド「くらべる」を押してから、到達イメージの中で lite になかったものをクリックしてください。\n全部で6つあります。",
+exp:"全部見つかりました。コマンド「かきだす」で保存してください。",
+done:"この制作は保存済みです。"
+},
+q32: {
+idle:"【手順】コマンド「えらぶ」を押してから、選択肢のボタンを押してください。\n決めるのは2つ、公開範囲と紹介文です。",
+pick:"【手順】コマンド「えらぶ」を押してから、選択肢のボタンを押してください。\n決めるのは2つ、公開範囲と紹介文です。",
+exp:"公開の準備が整いました。コマンド「かきだす」で保存してください。",
+done:"この制作は保存済みです。"
+},
+q33: {
+idle:"【手順】コマンド「えらぶ」を押してから、助言のボタンを押してください。\n後輩の質問は2つです。",
+pick:"【手順】コマンド「えらぶ」を押してから、助言のボタンを押してください。\n後輩の質問は2つです。",
+exp:"答え終わりました。コマンド「かきだす」で保存してください。",
+done:"この制作は保存済みです。"
 }
 };
 var COMMANDS = {
@@ -1768,7 +1876,9 @@ connect:[["tsunagu","つなぐ"],["exp","かきだす"],["back","もどる"]],
 move:[["ugokasu","うごかす"],["exp","かきだす"],["back","もどる"]],
 build:[["oku","おく"],["tsunagu","つなぐ"],["ugokasu","うごかす"],["exp","かきだす"],["back","もどる"]],
 aifix:[["makaseru","まかせる"],["exp","かきだす"],["back","もどる"]],
-photoscene:[["oku","おく"],["exp","かきだす"],["back","もどる"]]
+photoscene:[["oku","おく"],["exp","かきだす"],["back","もどる"]],
+compare:[["kuraberu","くらべる"],["exp","かきだす"],["back","もどる"]],
+choices:[["erabu","えらぶ"],["exp","かきだす"],["back","もどる"]]
 };
 function setBrief(html){ $("brief").innerHTML = html;}
 function updateUI(){
@@ -1801,6 +1911,7 @@ if(q.type === "banner" && stage.step === "copy") chipSig = "banner";
 else if(q.type === "combine" && stage.step === "pick") chipSig = "combine:" + stage.pick.join(",");
 else if(q.type === "logo" && stage.step === "color") chipSig = "logo";
 else if((q.type === "scene" || q.type === "build" || q.type === "photoscene") && stage.step === "place") chipSig = "palette:" + (stage.selObj || "");
+else if(q.type === "choices" && stage.step === "pick") chipSig = "choices:" + stage.choiceRound;
 if(chipSig){
 $("copies").classList.add("on");
 if(chipSig!== updateUI._chipSig) renderChips();
@@ -1830,6 +1941,8 @@ else if(id === "oku"){ en = (stage.step === "idle" || stage.step === "place"); a
 else if(id === "tsunagu"){ if(q.type === "build"){ en = stage.step === "link"; armed = stage.step === "link"; } else { en = (stage.step === "idle" || stage.step === "link"); armed = stage.step === "link"; } }
 else if(id === "ugokasu"){ if(q.type === "build"){ en = stage.step === "move"; armed = stage.step === "move"; } else { en = (stage.step === "idle" || stage.step === "path"); armed = stage.step === "path"; } }
 else if(id === "makaseru"){ en = (stage.step === "idle" || stage.step === "fix"); armed = stage.step === "fix";}
+else if(id === "kuraberu"){ en = (stage.step === "idle" || stage.step === "look"); armed = stage.step === "look";}
+else if(id === "erabu"){ en = (stage.step === "idle" || stage.step === "pick"); armed = stage.step === "pick";}
 else if(id === "exp"){ en = stage.step === "exp" || (q.type === "adjust" && stage.step === "adjust");}
 btn.disabled =!en;
 btn.classList.toggle("armed", armed);
@@ -1933,6 +2046,14 @@ refreshCanvas();
 }
 else if(id === "tsunagu" && q.type === "build"){
 stage.note = "ノードを2つ順にクリックして結んで。";
+refreshCanvas();
+}
+else if(id === "kuraberu" && q.type === "compare"){
+if(stage.step === "idle"){ stage.step = "look"; stage.note = ""; }
+refreshCanvas();
+}
+else if(id === "erabu" && q.type === "choices"){
+if(stage.step === "idle"){ stage.step = "pick"; stage.note = ""; }
 refreshCanvas();
 }
 else if(id === "oku" && q.type === "photoscene"){
@@ -2099,6 +2220,17 @@ stage.lightAng = (Math.atan2(p.y - 165, p.x - 240) * 180 / Math.PI + 360) % 360;
 cv.setPointerCapture(ev.pointerId);
 refreshCanvas();
 }
+}
+else if(q.type === "compare" && stage.step === "look"){
+var hitC = -1;
+q.spots.forEach(function(sp, i){ if(!stage.found[i] && Math.hypot(p.x - sp.x, p.y - sp.y) <= 28) hitC = i; });
+if(hitC >= 0){
+stage.found[hitC] = true;
+var leftC = q.spots.filter(function(_, i){ return!stage.found[i]; }).length;
+if(leftC === 0){ stage.step = "exp"; stage.note = "全部見つけた。あとは保存だけ。"; }
+else stage.note = "「" + q.spots[hitC].label + "」を見つけた。残り " + leftC + " つ。";
+}else{ stage.cmpMiss++; stage.note = "そこは lite にもあった場所みたい。"; }
+refreshCanvas(); updateUI();
 }
 else if(q.type === "photoscene" && stage.step === "place"){
 if(!stage.selObj){ stage.note = "先に素材を選んで。"; }
@@ -2356,6 +2488,23 @@ refreshCanvas(); updateUI();
 });
 wrap.appendChild(b);
 });
+}else if(q.type === "choices"){
+var round = q.rounds[stage.choiceRound];
+if(round) round.choices.forEach(function(ch){
+var b = document.createElement("button");
+b.className = "btn"; b.textContent = ch.t;
+b.dataset.chip = ch.t;
+b.addEventListener("click", function(){
+if(!stage || stage.q.type!== "choices" || stage.step!== "pick") return;
+if(ch.ok){
+stage.choiceRound++;
+if(stage.choiceRound >= stage.q.rounds.length){ stage.step = "exp"; stage.note = "決まった。あとは保存だけ。"; }
+else stage.note = "決まった。次は " + (stage.choiceRound + 1) + " つ目。";
+}else{ stage.choiceMiss++; stage.note = ch.why || "それは違うみたい。"; }
+refreshCanvas(); updateUI();
+});
+wrap.appendChild(b);
+});
 }else if(q.type === "logo"){
 q.palettes.forEach(function(pal, i){
 var b = document.createElement("button");
@@ -2498,6 +2647,16 @@ gains.ugokasu = Math.max(6, 9 - stage.pathMiss * 2);
 lines.push("納品完了！ 湖畔の世界が完成した");
 lines.push("ゆにてぃ編、卒業だね。整える・描く・作る・置く・つなぐ・動かす。全部の道具が揃った。");
 lines.push("あとは、作りたい世界を思い描くだけだよ。");
+}
+else if(q.type === "compare"){
+gains.hikari = Math.max(8, 16 - stage.cmpMiss * 2);
+lines.push("保存完了！ 違いが全部見つかった（外し " + stage.cmpMiss + " 回）");
+lines.push("木、岩、草、波、水の光、遠くの霧。景色は、要素の集まりだ。");
+}
+else if(q.type === "choices"){
+gains[q.gainSkill] = Math.max(8, 16 - stage.choiceMiss * 3);
+if(q.id === "q32"){ lines.push("保存完了！ ゲームが公開された（選び直し " + stage.choiceMiss + " 回）"); lines.push("作った世界が、誰かの画面に届く。つなぐ、の本当の意味はこれだ。"); }
+else{ lines.push("保存完了！ 後輩に答えた（選び直し " + stage.choiceMiss + " 回）"); lines.push("教える側になった。でも、学ぶことはまだ終わらない。"); }
 }
 else if(q.type === "photoscene"){
 gains.oku = Math.max(8, 16 - stage.sceneMiss * 2);
